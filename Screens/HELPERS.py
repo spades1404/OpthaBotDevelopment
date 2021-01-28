@@ -109,24 +109,32 @@ NavigationLayout:
             MDList:
                 OneLineIconListItem:
                     text: "Home"
-                    on_release: app.primaryScreen.content.ids.primaryScreenManager.current = "HOME"
+                    on_release: 
+                        app.primaryScreen.content.ids.primaryScreenManager.current = "HOME"
+                        navDraw.toggle_nav_drawer()
                     IconLeftWidget:
                         icon: "home"
                 OneLineIconListItem:
                     text: "Search"
-                    on_release: app.primaryScreen.content.ids.primaryScreenManager.current = "SEARCH"
+                    on_release: 
+                        app.primaryScreen.content.ids.primaryScreenManager.current = "SEARCH"
+                        navDraw.toggle_nav_drawer()
                     IconLeftWidget:
                         icon: "database-search"
                         
                 OneLineIconListItem:
                     text: "Settings"
-                    on_release: app.primaryScreen.content.ids.primaryScreenManager.current = "SETTINGS"
+                    on_release: 
+                        app.primaryScreen.content.ids.primaryScreenManager.current = "SETTINGS"
+                        navDraw.toggle_nav_drawer()           
                     IconLeftWidget:
                         icon: "content-save-settings"
                         
                 OneLineIconListItem:
                     text: "About"
-                    on_release: app.primaryScreen.content.ids.primaryScreenManager.current = "ABOUT"
+                    on_release: 
+                        app.primaryScreen.content.ids.primaryScreenManager.current = "ABOUT"
+                        navDraw.toggle_nav_drawer()
                     IconLeftWidget:
                         icon: "account-question"
                         
@@ -223,32 +231,87 @@ Screen:
 
 searchScreenHelper = '''
 Screen:
-    BoxLayout:
+    MDBoxLayout:
         orientation: "vertical"
-        padding: 15
-        spacing:5
+        spacing:20
+        padding:40
+        MDLabel:
+            text: "Search"
+            font_style: "H4"
+            size_hint_y: None
+            height: 15
+
         GridLayout:
-            cols:5
-            rows:1
-            size_hint_y:None
-            height:30
-            MDLabel:
-                text: "Search for"
-                
-            MDDropDownItem:
-                id: dropdownCAT1
-                
-            MDLabel:
-                text: "by"
-                
-            MDDropDownItem:
-                id: dropdownCAT2
-                    
+            cols: 4
+            rows: 2
+            spacing: [50,5]
+            padding: 20
             MDTextField:
-                hint_text: "Search Query"
-        ScrollView:   
+                id: fNameEntry
+                hint_text: "First Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: lNameEntry
+                hint_text: "Last Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: emailEntry
+                hint_text: "email"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: phoneEntry
+                hint_text: "Phone Number"
+                mode: "rectangle"
+               
+            MDTextField:
+                id: addy1Entry
+                hint_text: "Address Line"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: postcodeEntry
+                hint_text: "Postcode"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: orgIDEntry
+                hint_text: "ID"
+                mode: "rectangle"
+            
+            MDBoxLayout:
+                padding:5
+                spacing : 10
+                MDRaisedButton:
+                    text: "Search"
+                    halign:"center"
+                    valign:"center"
+                    on_release: app.primaryScreen.searchScreen.search()
+                MDSpinner:
+                    size_hint:None,None
+                    size: dp(20), dp(20)
+                    active:False
+                    id: spinner
+                    
+                
+            
+                        
+                
+        MDLabel:
+            text: "Results"
+            font_style: "H4"
+        ScrollView:
+            
             MDList:
                 id: resultListView
+            
+    
+        MDFloatingActionButton:
+            icon: "plus"
+            md_bg_color: app.theme_cls.primary_color
+
             
         
 '''

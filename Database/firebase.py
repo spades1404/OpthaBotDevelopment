@@ -1,11 +1,12 @@
-#from firebase import firebase
-import os
-#firebase admin allows to access the firestore
+#Database Imports
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore as fs
-import json
-import pyrebase #Lib to access our firebase storage
+import pyrebase #This one lets use access firebase storage - others do not
+import json #For reading our config files
+from difflib import SequenceMatcher #For search queries
+
+
 from Class.validation import Validation
 from Class.directories import Directories
 from Class.hashing import Passwords
@@ -147,8 +148,50 @@ class Database(): #Defining the firebase class inside the main window class beca
 
         return
 
+    def similar(self,a,b):
+        return SequenceMatcher(None,a,b).ratio()
+
+    def searchPX(self,fName = "", lName = "", email = "", id="", postcode= "", phone="",addy=""):
+        #THIS METHOD IS VERY SLOW FOR LARGE RECORDS
+        collection = self.fsdb.collection(u"patients").stream() #This has all of our patient records
+        scoreList = [] #This will store a list of simmilarity scores for each record
+        allRecords = []
+
+        for i in collection:
+            x = i.to_dict()
+            s1 = (self.similar(fName,x["fName"]))/7
+            s2 = (self.similar(lName, x["lName"]))/7
+            s3 = (self.similar(email, x["email"]))/7
+            s4 = (self.similar(id, x["orgID"]))/3 #we give this a higher weighting
+            s5 = (self.similar(postcode, x["postcode"]))/7
+            s6 = (self.similar(phone, x["phoneNumber"]))/7
+            s7 = (self.similar(addy, x["addressLine"]))/7
+
+            total = s1+s2+s3+s4+s5+s6+s7
+
+            allRecords.append(x)
+
+            scoreList.append(total)
+
+        allRecords = [x for _,x in sorted(zip(scoreList,allRecords))]
+
+        #lets strip both lists
+        for i in allRecords:
+            index = allRecords.index(i)
+            if scoreList[index] == 0:
+                scoreList.pop(index)
+                allRecords.pop(index)
+
+
+        #allRecords = collection[:10]
+
+        return allRecords[:10]
+
+
+
+
 
 
 if __name__ == "__main__":
     db = Database()
-    print(db.returnAllOrgs())
+
