@@ -4,6 +4,7 @@ from kivy.uix.screenmanager import ScreenManager
 from Screens.LOGIN import LogInScreen
 from Screens.PRIMARY import PrimaryScreen
 from threading import Thread
+from kivy.core.window import Window
 
 class OpthaBotApp(MDApp):
     def build(self):
@@ -15,6 +16,9 @@ class OpthaBotApp(MDApp):
         self.theme_cls.secondary_palette = "Purple"
         #self.theme_cls.theme_style = "Dark"
         self.icon = globalFuncs.directories.icon
+        Window.maximize()
+        #Window.size = (1920, 1080)
+
 
         #Screen stuff
         self.screenManager = ScreenManager()
@@ -30,8 +34,11 @@ class OpthaBotApp(MDApp):
     def onClose(self):
 
         def function():
-            print("Goodbye!")
+            print("Initiating Shutdown")
+            print("Clearing Temp Folder")
+            globalFuncs.clearTemp()
 
         Thread(target=function, daemon=True).start()
+
 
 OpthaBotApp().run()

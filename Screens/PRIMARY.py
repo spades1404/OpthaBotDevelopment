@@ -29,3 +29,4 @@ class PrimaryScreen(MDScreen):
         self.content.ids.primaryScreenManager.add_widget(self.aboutScreen)
         self.content.ids.primaryScreenManager.add_widget(self.settingsScreen)
         self.content.ids.primaryScreenManager.add_widget(self.searchScreen)
+

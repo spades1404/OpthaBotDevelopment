@@ -6,6 +6,7 @@ import phonenumbers
 from phonenumbers import carrier
 from phonenumbers.phonenumberutil import number_type
 from PIL import Image
+import datetime
 
 
 class Validation():
@@ -30,13 +31,14 @@ class Validation():
             return False
 
     def validatePlainString(self,strng,numCheck=False):
-        for i in strng:
-            if i in string.punctuation.replace("-",""):
-                return False
+        strng.replace("-","")
+        print(strng)
+
+        if strng.isalnum() == False:
+            return False
         if numCheck == True:
-            for i in strng:
-                if i.isnumeric() == True:
-                    return False
+            if strng.isalpha() == False:
+                return False
 
         return True
 
@@ -53,7 +55,13 @@ class Validation():
         except:
             return False
 
+    def checkDate(self, date):
+        try:
+            date = datetime.datetime.strptime(date, '%d/%m/%Y')
+            return True
 
+        except Exception as e:
+            return False
 
 
 if __name__ == "__main__":
@@ -62,13 +70,13 @@ if __name__ == "__main__":
     x = Validation()
 
     #CHECK WIFI FUNC
-    print(x.checkWifi())
+    #print(x.checkWifi())
 
     #VAL EMAIL FUNC
-    print(x.checkEmail("INFO HERE"))
+    #print(x.checkEmail("INFO HERE"))
 
     #POSTCODE FUNC
-    print(x.checkPostcode("INFO HERE"))
+    #print(x.checkPostcode("INFO HERE"))
 
     #STRING FUNC
     print(x.validatePlainString("Rajib"))
@@ -77,7 +85,9 @@ if __name__ == "__main__":
     print(x.validatePlainString("Rajib", numCheck=True))
 
     #NUM FUNC
-    print(x.checkNumber("INFO HERE"))
+    print(x.checkNumber("07951308773"))
+
+
 
 
 

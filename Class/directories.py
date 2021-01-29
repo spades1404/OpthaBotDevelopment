@@ -6,7 +6,7 @@ class Directories():
         print(self.cwd)
         self.configFile = self.cwd + r"\Database\config.json"
         self.keyFile = self.cwd + r"\Database\key.json"
-        self.temp = self.cwd + r"\Temp"
+        self.temp = self.cwd + r"\Temp/"
         self.assets = self.cwd + r"\Assets"
         self.model = self.cwd + r"\Tensorflow\Model\model.h5"
 
@@ -16,6 +16,7 @@ class Directories():
         self.icon = self.assets + r"\icon.png"
         self.emptyImageIcon = self.assets + r"\no-image-icon-6.png"
         self.appConfigFile = self.assets + r"\configuration.json"
+        self.appPermaSets = self.assets + r"\permaSet.json"
 
 
 

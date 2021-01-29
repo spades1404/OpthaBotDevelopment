@@ -1,10 +1,18 @@
 from kivy.lang.builder import Builder
 from kivymd.uix.screen import MDScreen
+from kivy.uix.screenmanager import ScreenManager
 from kivymd.uix.list import ThreeLineListItem
+from kivy.uix.relativelayout import RelativeLayout
+from kivy.properties import StringProperty
+from kivymd.uix.picker import MDDatePicker
+from kivymd.uix.dialog import MDDialog
 
 from Screens.HELPERS import searchScreenHelper
+from Screens.ADDUSER import AddUserScreen
 from Class.globalF import globalFuncs
 from threading import Thread
+import string
+import random
 
 
 
@@ -12,29 +20,44 @@ class SearchScreen(MDScreen):
     def __init__(self):
         super(SearchScreen, self).__init__()
         self.name = "SEARCH"
-        self.content = Builder.load_string(searchScreenHelper)
-        self.add_widget(self.content)
+
+        self.screenManager = ScreenManager()
+
+        self.mainContent = Builder.load_string(searchScreenHelper)
+        self.addUserScreen = AddUserScreen()
+
+
+        self.screenManager.add_widget(self.mainContent)
+        self.screenManager.add_widget(self.addUserScreen)
+        self.add_widget(self.screenManager)
         self.currentListItems = []
 
 
     def search(self):
         def function():
-            self.content.ids.spinner.active = True
+            self.mainContent.ids.spinner.active = True
+
+            if globalFuncs.validation.checkDate(self.mainContent.ids.dateEntry.ids.dateEntry.text) == False and (self.mainContent.ids.dateEntry.ids.dateEntry.text).replace(" ","") != "":
+                MDDialog(title="Error",text="Invalid Date")
+
             result = globalFuncs.database.searchPX(
-                fName=self.content.ids.fNameEntry.text,
-                lName=self.content.ids.lNameEntry.text,
-                email=self.content.ids.emailEntry.text,
-                id=self.content.ids.orgIDEntry.text,
-                postcode=self.content.ids.postcodeEntry.text,
-                phone=self.content.ids.phoneEntry.text,
-                addy=self.content.ids.addy1Entry.text
+                fName=self.mainContent.ids.fNameEntry.text,
+                lName=self.mainContent.ids.lNameEntry.text,
+                email=self.mainContent.ids.emailEntry.text,
+                id=self.mainContent.ids.orgIDEntry.text,
+                postcode=self.mainContent.ids.postcodeEntry.text,
+                phone=self.mainContent.ids.phoneEntry.text,
+                addy=self.mainContent.ids.addy1Entry.text,
+                date=self.mainContent.ids.dateEntry.ids.dateEntry.text
             )
             if result == []:
-                self.content.ids.spinner.active = False
+                self.mainContent.ids.spinner.active = False
                 return
 
+
+
             #Next clear the list using some list comprehension
-            [self.content.ids.resultListView.remove_widget(i) for i in self.currentListItems]
+            [self.mainContent.ids.resultListView.remove_widget(i) for i in self.currentListItems]
 
             #Next create a new widget list with some list comprehension
 
@@ -48,8 +71,8 @@ class SearchScreen(MDScreen):
 
             #Finally insert the new list items
 
-            [self.content.ids.resultListView.add_widget(i) for i in self.currentListItems]
-            self.content.ids.spinner.active = False
+            [self.mainContent.ids.resultListView.add_widget(i) for i in self.currentListItems]
+            self.mainContent.ids.spinner.active = False
 
 
 
@@ -57,3 +80,22 @@ class SearchScreen(MDScreen):
 
 
 
+    def setDate(self,date):
+        self.mainContent.ids.dateEntry.ids.dateEntry.text = date.strftime("%d/%m/%Y")
+        return
+
+    def selectCalendar(self):
+        date_dialog = MDDatePicker(callback=self.setDate)
+        date_dialog.open()
+
+        return
+
+
+
+class ClickableTextFieldRound(RelativeLayout):
+    text = StringProperty()
+    hint_text = StringProperty()
+
+class ClickableTextFieldRound2(RelativeLayout):
+    text = StringProperty()
+    hint_text = StringProperty()

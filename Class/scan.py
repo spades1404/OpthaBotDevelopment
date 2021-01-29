@@ -15,6 +15,7 @@ class Scan():
         self.fileName = r"{}.jpg".format(''.join(random.choices(string.ascii_uppercase + string.digits, k=15)))
         self.custID = None
         self.serverID = None
+        self.uploaded = False
 
 
 
@@ -29,7 +30,7 @@ class Scan():
         print(self.result)
         self.generateMultiDiListofResults()
     def generateTemp(self):
-        self.postProcessDir = globalFuncs.directories.temp+self.fileName
+        self.postProcessDir = globalFuncs.directories.temp + self.fileName
         self.postProcessImage.save(fp=self.postProcessDir)
         return self.postProcessDir
 

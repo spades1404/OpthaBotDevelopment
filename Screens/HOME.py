@@ -65,6 +65,17 @@ class HomeScreen(MDScreen):
 
             self.updateInfoText("File Found! - Testing")
 
+            if bool(globalFuncs.appSettings["Require Customer ID's on Scan"]) == True and (self.content.ids.pxidField.text).replace(" ", "") == "":
+                MDDialog(
+                    title="Error",
+                    text="No ID entered",
+                ).open()
+                globalFuncs.exit_event.set()
+                self.content.ids.progressBar.value = 100
+                self.updateInfoText("Scan Aborted - No ID entered")
+
+                return
+
             if globalFuncs.validation.checkImage(filename) == False:
                 self.updateInfoText("File is not an image - aborted")
                 globalFuncs.exit_event.set()
@@ -75,6 +86,7 @@ class HomeScreen(MDScreen):
                     scan.generateTemp()
                     self.content.ids.currentImage.source = scan.postProcessDir
 
+
                     if (self.content.ids.pxidField.text).replace(" ", "") == "":
                         scan.custID = self.content.ids.pxidField.text
 
@@ -82,7 +94,9 @@ class HomeScreen(MDScreen):
                     scan.analyze()
                     self.addScanToListView(scan)
                     self.updateInfoText("Image Processed Successfully")
-                    globalFuncs.database.uploadScan(scan)
+
+                    if globalFuncs.appSettings["Automatically Upload Scans"] == True:
+                        globalFuncs.database.uploadScan(scan)
                     self.updateInfoText("Uploading Scan To Server")
                     self.updateInfoText("Done!")
                 except:

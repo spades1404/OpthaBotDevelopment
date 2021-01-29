@@ -71,14 +71,15 @@ NavigationLayout:
                     elevation: 10
                     left_action_items: [["menu", lambda x: navDraw.toggle_nav_drawer()]]
                     
+                    
                 ScreenManager:
                     id: primaryScreenManager
     
     MDNavigationDrawer:
         id: navDraw
         orientation: "vertical"
-        padding: "8dp"
-        spacing: "8dp"
+        padding: 10
+        spacing: 15
     
         AnchorLayout:
             anchor_x: "left"
@@ -137,6 +138,14 @@ NavigationLayout:
                         navDraw.toggle_nav_drawer()
                     IconLeftWidget:
                         icon: "account-question"
+                
+                OneLineIconListItem:
+                    text: "Exit"
+                    on_release: 
+                        app.stop()
+                    IconLeftWidget:
+                        icon: "power-plug-off"
+                        
                         
     
         
@@ -152,6 +161,7 @@ MDBoxLayout:
     MDBoxLayout:
         
         orientation: "horizontal"
+        padding: 15
         MDNavigationRail:
             id: rail
             use_resizeable: True
@@ -230,10 +240,33 @@ Screen:
 '''
 
 searchScreenHelper = '''
+
+<ClickableTextFieldRound>:
+    size_hint_y: None
+    height: dateEntry.height
+
+    MDTextField:
+        id: dateEntry
+        hint_text: "Date"
+        text: ""
+        mode: "rectangle"
+        color_active: app.theme_cls.primary_light
+        helper_text: "Enter date in dd/mm/yyyy format"
+        helper_mode: "persistent"
+        
+       
+    MDIconButton:
+        icon: "calendar"
+        ripple_scale: .5
+        pos_hint: {"center_y": .5}
+        pos: dateEntry.width - self.width + dp(8), 0
+        on_release: app.primaryScreen.searchScreen.selectCalendar()
+            
 Screen:
+    name: "searchmain"
     MDBoxLayout:
         orientation: "vertical"
-        spacing:20
+        spacing:10
         padding:40
         MDLabel:
             text: "Search"
@@ -281,22 +314,24 @@ Screen:
                 hint_text: "ID"
                 mode: "rectangle"
             
-            MDBoxLayout:
-                padding:5
-                spacing : 10
-                MDRaisedButton:
-                    text: "Search"
-                    halign:"center"
-                    valign:"center"
-                    on_release: app.primaryScreen.searchScreen.search()
-                MDSpinner:
-                    size_hint:None,None
-                    size: dp(20), dp(20)
-                    active:False
-                    id: spinner
-                    
+            ClickableTextFieldRound:
+                id:dateEntry
                 
             
+            
+        MDBoxLayout:
+            spacing : 15
+            MDRaisedButton:
+                text: "Search"
+                halign:"center"
+                valign:"center"
+                on_release: app.primaryScreen.searchScreen.search()
+                
+            MDSpinner:
+                size_hint:None,None
+                size: dp(40), dp(40)
+                active: False
+                id: spinner 
                         
                 
         MDLabel:
@@ -306,11 +341,13 @@ Screen:
             
             MDList:
                 id: resultListView
-            
-    
+                
         MDFloatingActionButton:
             icon: "plus"
+            on_release: app.primaryScreen.searchScreen.screenManager.current = "adduser"
             md_bg_color: app.theme_cls.primary_color
+            
+    
 
             
         
@@ -324,25 +361,169 @@ Screen:
 '''
 
 settingsScreenHelper = '''
+
 Screen:
+    MDBoxLayout:
+        padding:30
+        spacing:10
+        orientation: "horizontal"
+        MDBoxLayout:
+            orientation: "vertical"
+            spacing:10
+            MDLabel:
+                text: "Settings"
+                font_style: "H4"
+                size_hint_y: None
+                height: 34
+            ScrollView:
+                MDList:    
+                    id: flipSwitchView
+            MDFillRoundFlatButton:
+                text:"Save Settings"
+                halign:"center"
+                on_release: app.primaryScreen.settingsScreen.saveSettings()
+        ScrollView:
+            id: detailsView
+            MDLabel:
+                text: "Software Details"
+                font_style: "H4"
+                
+                
+'''
+
+addUserHelper = '''
+<ClickableTextFieldRound>:
+    size_hint_y: None
+    height: dateEntry.height
+
+    MDTextField:
+        id: dateEntry
+        hint_text: "Date"
+        text: ""
+        mode: "rectangle"
+        color_active: app.theme_cls.primary_light
+        helper_text: "Enter date in dd/mm/yyyy format"
+        helper_mode: "persistent"
+        
+       
+    MDIconButton:
+        icon: "calendar"
+        ripple_scale: .5
+        pos_hint: {"center_y": .5}
+        pos: dateEntry.width - self.width + dp(8), 0
+        on_release: app.primaryScreen.searchScreen.addUserScreen.selectCalendar()
+        
+<ClickableTextFieldRound2>:
+    size_hint_y: None
+    height: numEntry.height
+
+    MDTextField:
+        id: numEntry
+        hint_text: "ID"
+        text: ""
+        mode: "rectangle"
+        color_active: app.theme_cls.primary_light
+        helper_text: "Enter date in dd/mm/yyyy format"
+        helper_mode: "persistent"
+        
+       
+    MDIconButton:
+        icon: "refresh"
+        ripple_scale: .5
+        pos_hint: {"center_y": .5}
+        pos: numEntry.width - self.width + dp(8), 0
+        on_release: app.primaryScreen.searchScreen.addUserScreen.autoGenID()
+        
+Screen:
+    name: "adduser"
     BoxLayout:
-        orientation: "vertical"
-        BoxLayout:
-            orientation: "horizontal"
-            ScrollView:
-                id: flipSwitchView
-                MDLabel:
-                    text: "Settings"
-            ScrollView:
-                id: detailsView
-                MDLabel:
-                    text: "Software Details"
-                
-        MDFlatButton:
-            text: "Save"
+        orientation:"vertical"
+        padding:40
+        spacing:10
+        MDLabel: 
+            halign: "center"
+            text:"To add a patient, fill out the details below and click add patient"
+            font_style:"Subtitle1"
             size_hint_y: None
-            height: 15 
+            height: 100
+        GridLayout:
+            cols: 4
+            rows: 2
+            spacing: [50,0]
+            padding: 10
+            MDTextField:
+                id: fNameEntry
+                hint_text: "First Name"
+                mode: "rectangle"
                 
+            MDTextField:
+                id: lNameEntry
+                hint_text: "Last Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: emailEntry
+                hint_text: "email"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: phoneEntry
+                hint_text: "Phone Number"
+                mode: "rectangle"
+               
+            MDTextField:
+                id: addy1Entry
+                hint_text: "Address Line"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: postcodeEntry
+                hint_text: "Postcode"
+                mode: "rectangle"
+                
+            ClickableTextFieldRound2:
+                id:orgIDEntry
+            
+            ClickableTextFieldRound:
+                id:dateEntry
+                
+        MDBoxLayout:
+            spacing : 15
+                
+            MDRaisedButton:
+                text: "Add Patient"
+                halign:"center"
+                valign:"center"
+                on_release: app.primaryScreen.searchScreen.addUserScreen.addUser()
+                
+            MDSpinner:
+                size_hint:None,None
+                size: dp(40), dp(40)
+                active: False
+                id: spinner
+                
+            MDLabel:
+                id: infoLabel
+                text:""
+                size_hint_y: None
+                height:15
+                font_style:"Caption"
+                    
+        MDLabel: 
+            halign: "center"
+            font_style:"Subtitle1"
+            size_hint_y: None
+            height: 160
+
+        MDFloatingActionButton:
+            icon: "backspace"
+            on_release: app.primaryScreen.searchScreen.screenManager.current = "searchmain"
+            md_bg_color: app.theme_cls.primary_color
+    
+'''
+
+viewUserHelper = '''
+
 '''
 
 
