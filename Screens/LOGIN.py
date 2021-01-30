@@ -22,8 +22,9 @@ class LogInScreen(MDScreen):
             self.content.ids.spinner.active = True
             result = globalFuncs.database.signIn(self.content.ids.userEntry.text, self.content.ids.passEntry.text)
             if result != None:
-                self.parent.current = "PRIMARY"
                 globalFuncs.currentUser = User(result)
+                self.parent.current = "PRIMARY"
+                self.parent.current_screen.content.ids.navBarSubtitle.text = "{} {}".format(globalFuncs.currentUser.fname,globalFuncs.currentUser.lname)
             else:
                 print("Failed")
                 self.logInFailed()
@@ -33,7 +34,9 @@ class LogInScreen(MDScreen):
         def bypassLogin():  # FOR DEV PURPOSE
             self.parent.current = "PRIMARY"
 
-        Thread(target=bypassLogin, daemon=True).start()
+
+        #Thread(target=bypassLogin, daemon=True).start()
+        Thread(target=function, daemon=True).start()
 
     def logInFailed(self):
         self.content.ids.userEntry.error = True

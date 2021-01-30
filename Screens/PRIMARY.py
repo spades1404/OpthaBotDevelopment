@@ -1,7 +1,7 @@
 from kivy.lang.builder import Builder
 from kivymd.uix.screen import MDScreen
 
-from Screens.HELPERS import  primaryScreenHelper,primaryScreenHelperVersion2
+from Screens.HELPERS import  primaryScreenHelper
 from Screens.HOME import HomeScreen
 from Screens.ABOUT import AboutScreen
 from Screens.SETTINGS import SettingsScreen

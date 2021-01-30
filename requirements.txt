@@ -1,0 +1,9 @@
+numpy
+Pillow
+requests
+phonenumbers
+kivymd
+Kivy
+tensorflow
+smartcrop
+tk

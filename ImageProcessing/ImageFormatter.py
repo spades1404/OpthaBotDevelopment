@@ -5,7 +5,6 @@ import PIL.ImageOps  #Additional module from pillow
 import cv2 #OpenCV image library
 import smartcrop # Image analyis library, allows intelligent cropping
 import numpy as np #NumPy lib
-import os
 #from resizeimage import resizeimage
 from Assets.RESIZE import resize_contain
 

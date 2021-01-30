@@ -151,45 +151,6 @@ NavigationLayout:
         
 '''
 
-primaryScreenHelperVersion2 = '''
-MDBoxLayout:
-    orientation: "vertical"
-    MDToolbar:
-        title: "OpthaBot"
-        elevation: 10
-        
-    MDBoxLayout:
-        
-        orientation: "horizontal"
-        padding: 15
-        MDNavigationRail:
-            id: rail
-            use_resizeable: True
-            visible: "persistent"
-            
-            MDNavigationRailItem:
-                icon: "home"
-                text: "Home"
-                on_open: app.primaryScreen.content.ids.primaryScreenManager.current = "HOME"
-                
-            MDNavigationRailItem:
-                icon: "database-search"
-                text: "Search"
-                on_open: app.primaryScreen.content.ids.primaryScreenManager.current = "SEARCH"
-
-            MDNavigationRailItem:
-                icon: "content-save-settings"
-                text: "Settings"
-                on_open: app.primaryScreen.content.ids.primaryScreenManager.current = "SETTINGS"
-
-            MDNavigationRailItem:
-                icon: "account-question"
-                text: "About"
-                on_open: app.primaryScreen.content.ids.primaryScreenManager.current = "ABOUT"
-                
-        ScreenManager:    
-            id: primaryScreenManager
-'''
 
 loginScreenHelper = '''
 Screen:
