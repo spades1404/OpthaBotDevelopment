@@ -17,7 +17,7 @@ class OpthaBotApp(MDApp):
         #self.theme_cls.theme_style = "Dark"
         self.icon = globalFuncs.directories.icon
         Window.maximize()
-        #Window.size = (1920, 1080)
+
 
 
         #Screen stuff

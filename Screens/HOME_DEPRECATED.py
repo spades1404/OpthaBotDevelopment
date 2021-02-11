@@ -16,6 +16,8 @@ from kivymd.uix.textfield import MDTextField
 from Screens.HELPERS import homeContentHelper
 from kivy.clock import Clock
 
+#THIS CODE IS NO LONGER USED, WILL BE DELETED SOON
+
 class HomeContent(Screen):
     def __init__(self, **kwargs):
         super(HomeContent, self).__init__(**kwargs)

@@ -210,10 +210,10 @@ class Database(): #Defining the firebase class inside the main window class beca
             s6 = (self.similar(phone, x["phoneNumber"]))/7
             s7 = (self.similar(addy, x["addressLine"]))/7
 
-            try:
-                date = datetime.datetime.strptime(date, '%d/%m/%Y')
 
-                if self.compareDate(x["dob"],date) == True:
+            try:
+                y = x["dob"]
+                if y == date:
                     s8 = 1
                 else:
                     s8 = 0
@@ -223,21 +223,30 @@ class Database(): #Defining the firebase class inside the main window class beca
 
             total = s1+s2+s3+s4+s5+s6+s7+s8
 
+
             allRecords.append(x)
 
             scoreList.append(total)
 
-        allRecords = [x for _,x in sorted(zip(scoreList,allRecords))]
+        #
+        multidlist = []
+        for i in range(len(allRecords)):
+            multidlist.append([allRecords[i],scoreList[i]])
 
+        multidlist = sorted(multidlist, key=lambda x: x[1], reverse=True)
+
+        allRecords = [i[0] for i in multidlist if i[1] > 0.05]
+
+        '''
+        validResults = []
         #lets strip both lists
-        for i in allRecords:
-            index = allRecords.index(i)
-            if scoreList[index] == 0:
-                scoreList.pop(index)
-                allRecords.pop(index)
+        for i in range(len(allRecords)):
+            if scoreList[i] > 0.05:
+                validResults.append(allRecords[0])
+        '''
 
 
-        #allRecords = collection[:10]
+        print(allRecords[:10])
 
         return allRecords[:10]
 

@@ -51,6 +51,7 @@ class SearchScreen(MDScreen):
                 date=self.mainContent.ids.dateEntry.ids.dateEntry.text
             )
             if result == []:
+                [self.mainContent.ids.resultListView.remove_widget(i) for i in self.currentListItems] #removing widgets
                 self.mainContent.ids.spinner.active = False
                 return
 

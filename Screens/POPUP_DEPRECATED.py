@@ -3,6 +3,8 @@ from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.button import MDFlatButton
 from kivy.metrics import dp
 
+#THIS CODE IS NO LONGER USED, WILL BE DELETED SOON
+
 class scanDialog(MDDialog):
     def __init__(self,scan):
         super(scanDialog, self).__init__()
