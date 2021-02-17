@@ -9,11 +9,10 @@ from kivymd.uix.dialog import MDDialog
 
 from Screens.HELPERS import searchScreenHelper
 from Screens.ADDUSER import AddUserScreen
+from Screens.VIEWUSER import ViewUserScreen
 from Class.globalF import globalFuncs
 from threading import Thread
-import string
-import random
-
+from functools import partial
 
 
 class SearchScreen(MDScreen):
@@ -25,10 +24,12 @@ class SearchScreen(MDScreen):
 
         self.mainContent = Builder.load_string(searchScreenHelper)
         self.addUserScreen = AddUserScreen()
+        self.viewUserScreen = ViewUserScreen()
 
 
         self.screenManager.add_widget(self.mainContent)
         self.screenManager.add_widget(self.addUserScreen)
+        self.screenManager.add_widget(self.viewUserScreen)
         self.add_widget(self.screenManager)
         self.currentListItems = []
 
@@ -66,7 +67,9 @@ class SearchScreen(MDScreen):
                 ThreeLineListItem(
                     text = "{} {}".format(i["fName"],i["lName"]),
                     secondary_text = "ID: {}".format(i["orgID"]),
-                    tertiary_text = "Click to show details"
+                    tertiary_text = "Click to show details",
+                    on_release = partial(self.displayUser, i) #DEAR FUTURE RAJIB, THIS IS HOW YOU CAN PASS PARAMETERS THROUGH A FUNCTION CALL
+
                 ) for i in result
             ]
 
@@ -88,8 +91,15 @@ class SearchScreen(MDScreen):
     def selectCalendar(self):
         date_dialog = MDDatePicker(callback=self.setDate)
         date_dialog.open()
-
         return
+
+    def displayUser(self,id,*args):
+        self.screenManager.current = "viewuser"
+        self.viewUserScreen.insertUser()
+        print(id)
+
+
+
 
 
 
