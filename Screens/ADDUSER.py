@@ -76,11 +76,6 @@ class AddUserScreen(MDScreen):
         self.content.ids.dateEntry.ids.dateEntry.text = date.strftime("%d/%m/%Y")
         return
 
-    def autoGenIDold(self):
-        letters = string.ascii_uppercase
-        self.content.ids.orgIDEntry.ids.numEntry.text = ''.join(random.choice(letters) for i in range(6))
-        return
-
     def autoGenID(self):
         self.content.ids.orgIDEntry.ids.numEntry.text = globalFuncs.database.generateNewORGID()
 

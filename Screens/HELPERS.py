@@ -484,7 +484,136 @@ Screen:
 '''
 
 viewUserHelper = '''
+<ClickableTextFieldRound>:
+    size_hint_y: None
+    height: dateEntry.height
 
+    MDTextField:
+        id: dateEntry
+        hint_text: "Date"
+        text: ""
+        mode: "rectangle"
+        color_active: app.theme_cls.primary_light
+        helper_text: "Enter date in dd/mm/yyyy format"
+        helper_mode: "persistent"
+        
+       
+    MDIconButton:
+        icon: "calendar"
+        ripple_scale: .5
+        pos_hint: {"center_y": .5}
+        pos: dateEntry.width - self.width + dp(8), 0
+        on_release: app.primaryScreen.searchScreen.viewUserScreen.selectCalendar()
+        
+<ClickableTextFieldRound2>:
+    size_hint_y: None
+    height: numEntry.height
+
+    MDTextField:
+        id: numEntry
+        hint_text: "ID"
+        text: ""
+        mode: "rectangle"
+        color_active: app.theme_cls.primary_light
+        helper_text: "Enter date in dd/mm/yyyy format"
+        helper_mode: "persistent"
+        
+       
+    MDIconButton:
+        icon: "refresh"
+        ripple_scale: .5
+        pos_hint: {"center_y": .5}
+        pos: numEntry.width - self.width + dp(8), 0
+        on_release: app.primaryScreen.searchScreen.viewUserScreen.autoGenID()
+        
+Screen:
+    BoxLayout:
+        orientation:"vertical"
+        padding:40
+        spacing:10
+        MDLabel:
+            text: "Patient Details"
+        GridLayout:
+            cols: 4
+            rows: 2
+            spacing: [50,0]
+            padding: 10
+            MDTextField:
+                id: fNameEntry
+                hint_text: "First Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: lNameEntry
+                hint_text: "Last Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: emailEntry
+                hint_text: "email"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: phoneEntry
+                hint_text: "Phone Number"
+                mode: "rectangle"
+               
+            MDTextField:
+                id: addy1Entry
+                hint_text: "Address Line"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: postcodeEntry
+                hint_text: "Postcode"
+                mode: "rectangle"
+                
+            ClickableTextFieldRound2:
+                id:orgIDEntry
+            
+            ClickableTextFieldRound:
+                id:dateEntry
+                
+        MDBoxLayout:
+            spacing : 15
+                
+            MDRaisedButton:
+                text: "Update Patient Details"
+                halign:"center"
+                valign:"center"
+                on_release: app.primaryScreen.searchScreen.viewUserScreen.updateUserDetails()
+                
+            MDSpinner:
+                size_hint:None,None
+                size: dp(40), dp(40)
+                active: False
+                id: spinner
+                
+            MDLabel:
+                id: infoLabel
+                text:""
+                size_hint_y: None
+                height:15
+                font_style:"Caption"
+                
+        MDLabel:
+            text: "Scan History"
+            
+        ScrollView:
+            BoxLayout:
+                orientation: "horizontal"
+                MDCard:
+                    MDLabel:
+                        text: "TEST1"
+                        
+                MDCard:
+                    MDLabel:
+                        text: "TEST2"
+        
+        MDFloatingActionButton:
+            icon: "backspace"
+            on_release: app.primaryScreen.searchScreen.screenManager.current = "searchmain"
+            md_bg_color: app.theme_cls.primary_color
 '''
 
 

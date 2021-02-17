@@ -35,8 +35,8 @@ class LogInScreen(MDScreen):
             self.parent.current = "PRIMARY"
 
 
-        #Thread(target=bypassLogin, daemon=True).start()
-        Thread(target=function, daemon=True).start()
+        Thread(target=bypassLogin, daemon=True).start() #bypasses login for us
+        #Thread(target=function, daemon=True).start()
 
     def logInFailed(self):
         self.content.ids.userEntry.error = True
