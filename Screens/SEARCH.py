@@ -11,6 +11,7 @@ from Screens.HELPERS import searchScreenHelper
 from Screens.ADDUSER import AddUserScreen
 from Screens.VIEWUSER import ViewUserScreen
 from Class.globalF import globalFuncs
+from Class.user import Patient
 from threading import Thread
 from functools import partial
 
@@ -65,8 +66,8 @@ class SearchScreen(MDScreen):
 
             self.currentListItems = [
                 ThreeLineListItem(
-                    text = "{} {}".format(i["fName"],i["lName"]),
-                    secondary_text = "ID: {}".format(i["orgID"]),
+                    text = "{} {}".format(i.fname,i.lname),
+                    secondary_text = "ID: {}".format(i.orgID),
                     tertiary_text = "Click to show details",
                     on_release = partial(self.displayUser, i) #DEAR FUTURE RAJIB, THIS IS HOW YOU CAN PASS PARAMETERS THROUGH A FUNCTION CALL
 

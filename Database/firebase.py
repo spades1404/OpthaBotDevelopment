@@ -12,6 +12,7 @@ import random
 from Class.validation import Validation
 from Class.directories import Directories
 from Class.hashing import Passwords
+from Class.user import Patient
 class Database(): #Defining the firebase class inside the main window class because of PyQt class handling oddities
     def __init__(self, dirs = None ):
         self.dirs = Directories()
@@ -224,7 +225,7 @@ class Database(): #Defining the firebase class inside the main window class beca
             total = s1+s2+s3+s4+s5+s6+s7+s8
 
 
-            allRecords.append(x)
+            allRecords.append(i)
 
             scoreList.append(total)
 
@@ -237,18 +238,8 @@ class Database(): #Defining the firebase class inside the main window class beca
 
         allRecords = [i[0] for i in multidlist if i[1] > 0.05]
 
-        '''
-        validResults = []
-        #lets strip both lists
-        for i in range(len(allRecords)):
-            if scoreList[i] > 0.05:
-                validResults.append(allRecords[0])
-        '''
 
-
-        print(allRecords[:10])
-
-        return allRecords[:10]
+        return [Patient(i) for i in allRecords[:10]]
 
 
 
