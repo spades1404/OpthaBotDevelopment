@@ -13,6 +13,8 @@ from Class.validation import Validation
 from Class.directories import Directories
 from Class.hashing import Passwords
 from Class.user import Patient
+import pytz
+import os
 class Database(): #Defining the firebase class inside the main window class because of PyQt class handling oddities
     def __init__(self, dirs = None ):
         self.dirs = Directories()
@@ -34,7 +36,8 @@ class Database(): #Defining the firebase class inside the main window class beca
         self.storage.child(pathOnServer).put(filePath)  # Saves our file on the server
 
     def downloadFromFirebaseStorage(self, pathOnServer, outputName):  # Downloading a file from the store
-        self.storage.child(pathOnServer).download(outputName)  # Grabs our file from the server and downloads
+        if os.path.exists(outputName) == False:
+            self.storage.child(pathOnServer).download(outputName)  # Grabs our file from the server and downloads
     ##################################################
 
 
@@ -147,15 +150,14 @@ class Database(): #Defining the firebase class inside the main window class beca
             "condition":scan.result,
             "custID":scan.custID,
             "location":serverLoc,
-            "time":scan.scanTime
+            "time":scan.scanTime,
+            "diagnosis":""
         }
 
-        self.fsdb.collection(u"images").add(scanRes)
+        result = self.fsdb.collection(u"images").add(scanRes)
+        scan.serverID = result[1].id
         scan.uploaded = True
         print(scanRes)
-        for i in self.fsdb.collection(u"images").stream():
-            if i.to_dict()["location"] == scanRes["location"]:
-                return i.id
 
         return
 
@@ -168,8 +170,7 @@ class Database(): #Defining the firebase class inside the main window class beca
             "postcode" : postcode,
             "phoneNumber" : phone,
             "addressLine" : addy,
-            "dob" : date,
-            "scans" : []
+            "dob" : date
         }
 
         self.fsdb.collection(u"patients").add(dict)
@@ -236,10 +237,39 @@ class Database(): #Defining the firebase class inside the main window class beca
 
         multidlist = sorted(multidlist, key=lambda x: x[1], reverse=True)
 
-        allRecords = [i[0] for i in multidlist if i[1] > 0.05]
+        allRecords = [Patient(i[0]) for i in multidlist if i[1] > 0.05]
 
 
-        return [Patient(i) for i in allRecords[:10]]
+        return allRecords[:10]
+
+    def updateScanPXLink(self,sourceID,linkID):
+        record = self.fsdb.collection(u"images").document(sourceID)
+        record.update({"custID":linkID})
+
+    def updateDiagnosis(self,sourceID,cond):
+        record = self.fsdb.collection(u"images").document(sourceID)
+        record.update({"diagnosis": cond})
+
+    def returnRecentScans(self,filter): #filter =1 for past day =2 for past week =3 for past month
+        result = self.fsdb.collection(u"images").order_by("time",direction = "DESCENDING").get()
+        start = datetime.datetime.now()
+
+        d=1
+        if filter == 1:
+            d = 1
+        elif filter == 2:
+            d = 7
+        elif filter == 3:
+            d = 30
+        end = datetime.datetime.now() - datetime.timedelta(days=d)
+
+        filtered = [i for i in result if pytz.UTC.localize(end) <= i.to_dict()["time"] <= pytz.UTC.localize(start)]
+
+        return filtered
+
+    def returnScansFromUser(self,id):
+        return self.fsdb.collection(u"images").where("custID","==",id).get()
+
 
 
 

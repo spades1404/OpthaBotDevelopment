@@ -2,12 +2,16 @@ from kivy.lang.builder import Builder
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.list import ThreeLineAvatarIconListItem,OneLineListItem,IconLeftWidget
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
+from kivy.uix.screenmanager import ScreenManager
+from functools import partial
+
 
 from Class.globalF import globalFuncs
 from Class.scan import Scan
 
 from Screens.HELPERS import homeContentHelper
+from Screens.VIEWSCAN import ViewScanScreen
+
 
 from threading import Thread
 
@@ -16,42 +20,45 @@ class HomeScreen(MDScreen):
     def __init__(self):
         super(HomeScreen, self).__init__()
         self.name = "HOME"
+        self.sm = ScreenManager()
+
         self.content = Builder.load_string(homeContentHelper)
         self.content.ids.currentImage.source = globalFuncs.directories.emptyImageIcon
-        self.add_widget(self.content)
+        self.viewScanScreen = ViewScanScreen()
+        self.viewScanScreen.content.ids.back.on_release = partial(self.switchScreen,"home")
+
+
+        self.sm.add_widget(self.content)
+        self.sm.add_widget(self.viewScanScreen)
+        self.add_widget(self.sm)
 
         self.firstScan = OneLineListItem(text="Nothing Here Yet... Try Upload an Image!")
         self.content.ids.listView.add_widget(self.firstScan)
 
         return
 
-    def addScanToListView(self,scan):
+    def addScanToListView(self,scan,*args):
         if self.firstScan != True:
             self.content.ids.listView.remove_widget(self.firstScan)
             self.firstScan=True
         item = ThreeLineAvatarIconListItem(
             text = "Scan {}".format(scan.scanTime.strftime("%H:%M:%S")),
             secondary_text = "{}% Certainty of {}".format(int(scan.resultList[0][1]*100),scan.resultList[0][0]),
-            tertiary_text = "Click To View Full Results"
+            tertiary_text = "Click To View Full Results",
+            on_release = partial(self.showScan,scan)
 
         )
-        item.on_release = lambda:self.displayScanPopup(scan)
         item.add_widget(IconLeftWidget(icon = scan.postProcessDir))
 
         self.content.ids.listView.add_widget(item)
         return
 
-    def displayScanPopup(self,scan=None):
-        dialog = MDDialog(
-            title = "Scan Results",
-            text = scan.generateDescription(),
-            buttons=[
-                MDFlatButton(text="Close"),
-                MDFlatButton(text="Link Record"),
-                MDFlatButton(text="Update")
-            ]
-        )
-        dialog.open()
+    def switchScreen(self,name):
+        self.sm.current = name
+
+    def showScan(self,scan,*args):
+        self.switchScreen("VIEWSCAN")
+        self.viewScanScreen.insertScan(scan)
         return
 
     def updateInfoText(self,text):
@@ -82,13 +89,14 @@ class HomeScreen(MDScreen):
                 return
             else:
                 try:
-                    scan = Scan(filename)
+                    scan = Scan().initialiseFromProg(filename)
                     scan.generateTemp()
                     self.content.ids.currentImage.source = scan.postProcessDir
 
 
-                    if (self.content.ids.pxidField.text).replace(" ", "") == "":
+                    if self.content.ids.pxidField.text.replace(" ", "") != "":
                         scan.custID = self.content.ids.pxidField.text
+                        print("added")
 
                     self.updateInfoText("Analyzing Image")
                     scan.analyze()
@@ -109,5 +117,3 @@ class HomeScreen(MDScreen):
         Thread(target=function, daemon=True).start()
 
         return
-
-

@@ -2,5 +2,6 @@
   "devMode" : "True",
   "firstBoot" : "False",
   "org" : "None",
-  "practice" : "None"
+  "practice" : "None",
+  "facade" : "True"
 }

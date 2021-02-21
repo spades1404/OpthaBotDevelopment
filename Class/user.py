@@ -1,5 +1,4 @@
-from Database.firebase import Database
-
+from Class.validation import Validation
 class Profile(): #Base profile super class
     def __init__(self,obj):
         self.document = obj
@@ -33,3 +32,59 @@ class Patient(Profile):
         self.postcode = self.details["postcode"]
         self.scans = self.details["scans"]
         return
+
+
+    def updatePXdetails(self,fname,lname,email,id,postcode,phone,addy,date):
+        '''
+        f = [fname, lname, email, id, postcode, phone, addy]
+        for i in [i.replace(" ", "") for i in f]:
+            if i == "":
+                return "Not all fields filled"
+
+        validation = Validation()
+
+        if validation.validatePlainString(fname,numCheck=True) == False or validation.validatePlainString(lname, numCheck=True) == False:
+            return "Name must not have numbers"
+
+        if validation.checkEmail(email) == False:
+            return "Invalid Email"
+
+        if validation.validatePlainString(id) == False:
+            return "ID is not a valid string"
+
+        if validation.checkNumber(phone) == False:
+            return "Invalid Number"
+
+        if validation.checkDate(date) == False:
+            return "Invalid Date"
+
+        # if globalFuncs.validation.validatePlainString(addy) == False:
+        #    return "Address is not a valid string"
+
+        if validation.checkPostcode(postcode) == False:
+            return "Postcode is not valid"
+
+        '''
+
+        changes = {}
+        if fname.replace(" ","") != "" and self.details["fName"] != fname:
+            changes["fName"] = fname
+        elif lname.replace(" ","") != "" and self.details["lName"] != lname:
+            changes["lName"] = lname
+        elif email.replace(" ","") != "" and self.details["email"] != email:
+            changes["email"] = email
+        elif id.replace(" ","") != "" and self.details["orgID"] != id:
+            changes["orgID"] = id
+        elif postcode.replace(" ","") != "" and self.details["postcode"] != postcode:
+            changes["postcode"] = postcode
+        elif phone.replace(" ","") != "" and self.details["phoneNumber"] != phone:
+            changes["phoneNumber"] = phone
+        elif addy.replace(" ","") != "" and self.details["addressLine"] != addy:
+            changes["addressLine"] = addy
+        elif date.replace(" ","") != "" and self.details["dob"] != date:
+            changes["dob"] = date
+
+        if changes != {}:
+            print(self.document.reference.update(changes))
+
+        return True

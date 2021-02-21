@@ -6,6 +6,8 @@ from Screens.HOME import HomeScreen
 from Screens.ABOUT import AboutScreen
 from Screens.SETTINGS import SettingsScreen
 from Screens.SEARCH import SearchScreen
+from Screens.SCANS import ScanListViewScreen
+from Screens.VIEWSCAN import ViewScanScreen
 
 
 
@@ -23,10 +25,16 @@ class PrimaryScreen(MDScreen):
         self.aboutScreen = AboutScreen()
         self.settingsScreen = SettingsScreen()
         self.searchScreen = SearchScreen()
+        self.viewScansScreen = ScanListViewScreen()
+        self.viewSingleScanScreen = ViewScanScreen()
 
         #Add screens to manager
         self.content.ids.primaryScreenManager.add_widget(self.homeScreen)
         self.content.ids.primaryScreenManager.add_widget(self.aboutScreen)
         self.content.ids.primaryScreenManager.add_widget(self.settingsScreen)
         self.content.ids.primaryScreenManager.add_widget(self.searchScreen)
+        self.content.ids.primaryScreenManager.add_widget(self.viewScansScreen)
+        self.content.ids.primaryScreenManager.add_widget(self.viewSingleScanScreen)
+
+
 

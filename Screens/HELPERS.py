@@ -1,5 +1,6 @@
 homeContentHelper = '''
 Screen:
+    name: "home"
     BoxLayout:
         orientation: "horizontal"
         padding: 10
@@ -7,13 +8,16 @@ Screen:
         BoxLayout:
             orientation: "vertical"
             padding: 15
+            spacing:10
 
             MDLabel:
                 text: "Current Image"
-                font_style: "Subtitle2"
+                font_style: "H5"
                 size_hint_y: None
                 height: 20
-
+            
+            MDSeparator:
+            
             AsyncImage:
                 id: currentImage
                 
@@ -31,6 +35,7 @@ Screen:
                 MDTextField:
                     id: pxidField
                     hint_text: "Patient ID"
+                    text:
             
             MDProgressBar:
                 id: progressBar
@@ -49,11 +54,14 @@ Screen:
         BoxLayout:
             orientation: "vertical"
             padding: 15
+            spacing:10
             MDLabel:
                 text: "Recent Results"
-                font_style: "Subtitle2"
+                font_style: "H5"
                 size_hint_y: None
                 height: 20
+                
+            MDSeparator:
             
             ScrollView:
                 MDList:
@@ -106,6 +114,8 @@ NavigationLayout:
             size_hint_y: None
             height: self.texture_size[1]
             
+        MDSeparator:
+            
         ScrollView:
             MDList:
                 OneLineIconListItem:
@@ -121,7 +131,15 @@ NavigationLayout:
                         app.primaryScreen.content.ids.primaryScreenManager.current = "SEARCH"
                         navDraw.toggle_nav_drawer()
                     IconLeftWidget:
-                        icon: "database-search"
+                        icon: "magnify"
+                        
+                OneLineIconListItem:
+                    text: "Scans"
+                    on_release: 
+                        app.primaryScreen.content.ids.primaryScreenManager.current = "LISTSCAN"
+                        navDraw.toggle_nav_drawer()
+                    IconLeftWidget:
+                        icon: "selection-search"
                         
                 OneLineIconListItem:
                     text: "Settings"
@@ -129,7 +147,7 @@ NavigationLayout:
                         app.primaryScreen.content.ids.primaryScreenManager.current = "SETTINGS"
                         navDraw.toggle_nav_drawer()           
                     IconLeftWidget:
-                        icon: "content-save-settings"
+                        icon: "cogs"
                         
                 OneLineIconListItem:
                     text: "About"
@@ -234,6 +252,8 @@ Screen:
             font_style: "H4"
             size_hint_y: None
             height: 15
+        
+        MDSeparator:
 
         GridLayout:
             cols: 4
@@ -298,6 +318,9 @@ Screen:
         MDLabel:
             text: "Results"
             font_style: "H4"
+            
+        MDSeparator:
+        
         ScrollView:
             
             MDList:
@@ -533,6 +556,9 @@ Screen:
         spacing:10
         MDLabel:
             text: "Patient Details"
+            font_style: "H5"
+            
+        MDSeparator:
         GridLayout:
             cols: 4
             rows: 2
@@ -578,6 +604,7 @@ Screen:
             spacing : 15
                 
             MDRaisedButton:
+                id:updatePX
                 text: "Update Patient Details"
                 halign:"center"
                 valign:"center"
@@ -598,22 +625,145 @@ Screen:
                 
         MDLabel:
             text: "Scan History"
+            font_style: "H5"
+        
+        MDSeparator:
             
         ScrollView:
+            do_scroll_y: False
+            do_scroll_x: True
             BoxLayout:
                 orientation: "horizontal"
-                MDCard:
-                    MDLabel:
-                        text: "TEST1"
-                        
-                MDCard:
-                    MDLabel:
-                        text: "TEST2"
-        
+                spacing: 15
+                id: listview
+                
         MDFloatingActionButton:
             icon: "backspace"
             on_release: app.primaryScreen.searchScreen.screenManager.current = "searchmain"
             md_bg_color: app.theme_cls.primary_color
+            halign: "right"
+'''
+viewScansHelper = '''
+<Check@MDCheckbox>:
+    group: 'group'
+    size_hint: None, None
+    size: dp(48), dp(48)
+    on_release: app.primaryScreen.viewScansScreen.loadScans()
+    
+<DLabel@MDLabel>:
+    size_hint_x: None
+    width:60
+
+Screen:
+    name: "listview"
+    MDBoxLayout:
+        orientation: "vertical"
+        padding:40
+        spacing:20
+        MDBoxLayout:
+            spacing:15
+            size_hint_y: None
+            height: 50
+            
+            MDLabel:
+                text: "Recent Scans"
+                font_style: "H5"
+                
+            DLabel:
+                text: "Today"
+                
+            
+            Check:
+                active: True
+                id: day
+                
+            DLabel:
+                text: "Last Week"
+            
+            Check:
+                id: week
+                
+            DLabel:
+                text: "Last Month"
+                
+            Check:
+                id: month
+                
+        MDSeparator:
+            
+        ScrollView:
+            MDList:
+                id:listview
+        
 '''
 
+
+
+viewScanHelper = '''
+Screen:
+
+    BoxLayout:
+        padding:60
+        spacing:5
+        orientation: "horizontal"
+        
+        BoxLayout:
+            orientation: "vertical"
+            spacing:14
+            
+            MDLabel:
+                text: "Scan Details"
+                font_style: "H4"
+                size_hint_y: None
+                height: 20
+            MDLabel:
+                id: results
+            
+                
+            MDTextField:
+                id: field
+                hint_text: "Diagnosis"
+                on_focus: if self.focus: app.primaryScreen.viewSingleScanScreen.menu.open()
+                
+            MDTextField:
+                id: orgid
+                hint_text: "Patient ID"
+                text:
+            
+            MDFlatButton:
+                id: updateButt
+                text: "Update"
+                md_bg_color: app.theme_cls.primary_color
+                
+            MDFlatButton:
+                id: deleteButt
+                text: "Delete Scan"
+                md_bg_color: app.theme_cls.primary_color
+                
+                
+        
+        BoxLayout:
+            orientation: "vertical"
+            spacing:20
+            MDLabel:
+                text: "Scan"
+                font_style: "H4"
+                size_hint_y: None
+                height: 20
+                
+            AsyncImage:
+                id: image
+                
+        MDFloatingActionButton:
+            id: back
+            icon: "backspace"
+            on_release: 
+            md_bg_color: app.theme_cls.primary_color
+                
+            
+            
+                
+            
+            
+'''
 

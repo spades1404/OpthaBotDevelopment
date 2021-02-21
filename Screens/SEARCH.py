@@ -7,6 +7,7 @@ from kivy.properties import StringProperty
 from kivymd.uix.picker import MDDatePicker
 from kivymd.uix.dialog import MDDialog
 
+
 from Screens.HELPERS import searchScreenHelper
 from Screens.ADDUSER import AddUserScreen
 from Screens.VIEWUSER import ViewUserScreen
@@ -14,6 +15,7 @@ from Class.globalF import globalFuncs
 from Class.user import Patient
 from threading import Thread
 from functools import partial
+from Screens.VIEWSCAN import ViewScanScreen
 
 
 class SearchScreen(MDScreen):
@@ -23,19 +25,28 @@ class SearchScreen(MDScreen):
 
         self.screenManager = ScreenManager()
 
+
         self.mainContent = Builder.load_string(searchScreenHelper)
         self.addUserScreen = AddUserScreen()
         self.viewUserScreen = ViewUserScreen()
+        self.viewScanScreen = ViewScanScreen()
+        self.viewScanScreen.content.ids.back.on_release = partial(self.switchScreen,"viewuser")
+
 
 
         self.screenManager.add_widget(self.mainContent)
         self.screenManager.add_widget(self.addUserScreen)
         self.screenManager.add_widget(self.viewUserScreen)
+        self.screenManager.add_widget(self.viewScanScreen)
         self.add_widget(self.screenManager)
         self.currentListItems = []
 
 
-    def search(self):
+    def switchScreen(self,name):
+        self.screenManager.current = name
+
+
+    def search(self): #THIS FUNCTION NEEDS TO BE FIXED CAPS BREAK IT
         def function():
             self.mainContent.ids.spinner.active = True
 
@@ -69,7 +80,7 @@ class SearchScreen(MDScreen):
                     text = "{} {}".format(i.fname,i.lname),
                     secondary_text = "ID: {}".format(i.orgID),
                     tertiary_text = "Click to show details",
-                    on_release = partial(self.displayUser, i) #DEAR FUTURE RAJIB, THIS IS HOW YOU CAN PASS PARAMETERS THROUGH A FUNCTION CALL
+                    on_release = partial(self.displayPX, i) #DEAR FUTURE RAJIB, THIS IS HOW YOU CAN PASS PARAMETERS THROUGH A FUNCTION CALL
 
                 ) for i in result
             ]
@@ -94,9 +105,9 @@ class SearchScreen(MDScreen):
         date_dialog.open()
         return
 
-    def displayUser(self,id,*args):
+    def displayPX(self,px,*args):
         self.screenManager.current = "viewuser"
-        self.viewUserScreen.insertUser()
+        self.viewUserScreen.insertUser(px)
         print(id)
 
 
