@@ -34,10 +34,15 @@ class Validation():
         strng.replace("-","")
         print(strng)
 
-        if strng.isalnum() == False:
+        if strng.isalnum() == False:  # IF THE STRING IS NOT ALPHANUMERIC RETURN FALSE
             return False
+
         if numCheck == True:
-            if strng.isalpha() == False:
+            c = 0
+            for i in strng:
+                if i.isnumeric() == True:
+                    c += 1
+            if c > 0:
                 return False
 
         return True

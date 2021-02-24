@@ -10,7 +10,7 @@ from kivymd.uix.dialog import MDDialog
 
 from Screens.HELPERS import searchScreenHelper
 from Screens.ADDUSER import AddUserScreen
-from Screens.VIEWUSER import ViewUserScreen
+from Screens.VIEWPX import ViewPXScreen
 from Class.globalF import globalFuncs
 from Class.user import Patient
 from threading import Thread
@@ -28,7 +28,7 @@ class SearchScreen(MDScreen):
 
         self.mainContent = Builder.load_string(searchScreenHelper)
         self.addUserScreen = AddUserScreen()
-        self.viewUserScreen = ViewUserScreen()
+        self.viewPXScreen = ViewPXScreen()
         self.viewScanScreen = ViewScanScreen()
         self.viewScanScreen.content.ids.back.on_release = partial(self.switchScreen,"viewuser")
 
@@ -36,7 +36,7 @@ class SearchScreen(MDScreen):
 
         self.screenManager.add_widget(self.mainContent)
         self.screenManager.add_widget(self.addUserScreen)
-        self.screenManager.add_widget(self.viewUserScreen)
+        self.screenManager.add_widget(self.viewPXScreen)
         self.screenManager.add_widget(self.viewScanScreen)
         self.add_widget(self.screenManager)
         self.currentListItems = []
@@ -107,18 +107,5 @@ class SearchScreen(MDScreen):
 
     def displayPX(self,px,*args):
         self.screenManager.current = "viewuser"
-        self.viewUserScreen.insertUser(px)
+        self.viewPXScreen.insertUser(px)
         print(id)
-
-
-
-
-
-
-class ClickableTextFieldRound(RelativeLayout):
-    text = StringProperty()
-    hint_text = StringProperty()
-
-class ClickableTextFieldRound2(RelativeLayout):
-    text = StringProperty()
-    hint_text = StringProperty()

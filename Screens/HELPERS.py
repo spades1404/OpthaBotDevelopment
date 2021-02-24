@@ -118,44 +118,8 @@ NavigationLayout:
             
         ScrollView:
             MDList:
-                OneLineIconListItem:
-                    text: "Home"
-                    on_release: 
-                        app.primaryScreen.content.ids.primaryScreenManager.current = "HOME"
-                        navDraw.toggle_nav_drawer()
-                    IconLeftWidget:
-                        icon: "home"
-                OneLineIconListItem:
-                    text: "Search"
-                    on_release: 
-                        app.primaryScreen.content.ids.primaryScreenManager.current = "SEARCH"
-                        navDraw.toggle_nav_drawer()
-                    IconLeftWidget:
-                        icon: "magnify"
-                        
-                OneLineIconListItem:
-                    text: "Scans"
-                    on_release: 
-                        app.primaryScreen.content.ids.primaryScreenManager.current = "LISTSCAN"
-                        navDraw.toggle_nav_drawer()
-                    IconLeftWidget:
-                        icon: "selection-search"
-                        
-                OneLineIconListItem:
-                    text: "Settings"
-                    on_release: 
-                        app.primaryScreen.content.ids.primaryScreenManager.current = "SETTINGS"
-                        navDraw.toggle_nav_drawer()           
-                    IconLeftWidget:
-                        icon: "cogs"
-                        
-                OneLineIconListItem:
-                    text: "About"
-                    on_release: 
-                        app.primaryScreen.content.ids.primaryScreenManager.current = "ABOUT"
-                        navDraw.toggle_nav_drawer()
-                    IconLeftWidget:
-                        icon: "account-question"
+                id:listMenu
+                
                 
                 OneLineIconListItem:
                     text: "Exit"
@@ -168,7 +132,6 @@ NavigationLayout:
     
         
 '''
-
 
 loginScreenHelper = '''
 Screen:
@@ -220,7 +183,7 @@ Screen:
 
 searchScreenHelper = '''
 
-<ClickableTextFieldRound>:
+<DateSelector@RelativeLayout>:
     size_hint_y: None
     height: dateEntry.height
 
@@ -295,7 +258,7 @@ Screen:
                 hint_text: "ID"
                 mode: "rectangle"
             
-            ClickableTextFieldRound:
+            DateSelector:
                 id:dateEntry
                 
             
@@ -368,15 +331,31 @@ Screen:
                 on_release: app.primaryScreen.settingsScreen.saveSettings()
         ScrollView:
             id: detailsView
-            MDLabel:
-                text: "Software Details"
-                font_style: "H4"
+            MDBoxLayout:
+                orientation: "vertical"
+                spacing: 20
+                padding: 10
+                MDLabel:
+                    text: "Software Details"
+                    font_style: "H4"
+                    size_hint_y:None
+                    height:20
+                MDTextField:
+                    id: orgname
+                    mode:"rectangle"
+                    hint_text: "Organisation Name"
+                MDTextField:
+                    id: pracname
+                    mode:"rectangle"
+                    hint_text: "Practice Name"
+
+                
                 
                 
 '''
 
 addUserHelper = '''
-<ClickableTextFieldRound>:
+<DateSelector@RelativeLayout>:
     size_hint_y: None
     height: dateEntry.height
 
@@ -397,7 +376,7 @@ addUserHelper = '''
         pos: dateEntry.width - self.width + dp(8), 0
         on_release: app.primaryScreen.searchScreen.addUserScreen.selectCalendar()
         
-<ClickableTextFieldRound2>:
+<IDSelector@RelativeLayout>:
     size_hint_y: None
     height: numEntry.height
 
@@ -465,10 +444,10 @@ Screen:
                 hint_text: "Postcode"
                 mode: "rectangle"
                 
-            ClickableTextFieldRound2:
+            IDSelector:
                 id:orgIDEntry
             
-            ClickableTextFieldRound:
+            DateSelector:
                 id:dateEntry
                 
         MDBoxLayout:
@@ -506,8 +485,8 @@ Screen:
     
 '''
 
-viewUserHelper = '''
-<ClickableTextFieldRound>:
+viewPXHelper = '''
+<DateSelector@RelativeLayout>:
     size_hint_y: None
     height: dateEntry.height
 
@@ -526,9 +505,9 @@ viewUserHelper = '''
         ripple_scale: .5
         pos_hint: {"center_y": .5}
         pos: dateEntry.width - self.width + dp(8), 0
-        on_release: app.primaryScreen.searchScreen.viewUserScreen.selectCalendar()
+        on_release: app.primaryScreen.searchScreen.viewPXScreen.selectCalendar()
         
-<ClickableTextFieldRound2>:
+<IDSelector@RelativeLayout>:
     size_hint_y: None
     height: numEntry.height
 
@@ -547,7 +526,7 @@ viewUserHelper = '''
         ripple_scale: .5
         pos_hint: {"center_y": .5}
         pos: numEntry.width - self.width + dp(8), 0
-        on_release: app.primaryScreen.searchScreen.viewUserScreen.autoGenID()
+        on_release: app.primaryScreen.searchScreen.viewPXScreen.autoGenID()
         
 Screen:
     BoxLayout:
@@ -594,10 +573,10 @@ Screen:
                 hint_text: "Postcode"
                 mode: "rectangle"
                 
-            ClickableTextFieldRound2:
+            IDSelector:
                 id:orgIDEntry
             
-            ClickableTextFieldRound:
+            DateSelector:
                 id:dateEntry
                 
         MDBoxLayout:
@@ -697,8 +676,6 @@ Screen:
         
 '''
 
-
-
 viewScanHelper = '''
 Screen:
 
@@ -759,11 +736,256 @@ Screen:
             icon: "backspace"
             on_release: 
             md_bg_color: app.theme_cls.primary_color
-                
-            
-            
-                
-            
-            
+                            
 '''
 
+introScreenHelper = '''
+Screen:
+    name: "INTRO"
+    MDBoxLayout:
+        padding: 250,0,0,250
+        spacing:50
+        orientation:"vertical"
+        valign: "center"
+        halign:"center"
+        
+        MDLabel:
+            font_style: "H2"
+            text: "Hello!"
+            size_hint_y:None
+            height: 30
+            
+        MDLabel:
+            font_style: "Subtitle1"
+            text: "How would you like to setup this app?"
+            size_hint_y:None
+            height: 15
+        
+        MDBoxLayout:
+            orientation:"horizontal"
+            spacing:20
+            size_hint_y:None
+            height: 15
+            
+            MDRaisedButton:
+                elevation:20
+                text: "Setup Existing Practice"
+                on_release: app.setup.sm.current = "EXISTINGPRAC"
+                size_hint_y:None
+                height: 30
+                md_bg_color: app.theme_cls.primary_color
+                
+            MDRaisedButton:
+                elevation:20
+                text: "Setup New Practice"
+                on_release: app.setup.sm.current = "NEWPRAC"
+                size_hint_y:None
+                height: 30
+                md_bg_color: app.theme_cls.primary_color
+'''
+
+setupExistingHelper = '''
+Screen:
+    name: "EXISTINGPRAC"
+    MDBoxLayout:
+        orientation:"vertical"
+        padding: 50
+        spacing:20
+        
+        MDLabel:
+            font_style: "H3"
+            text: "Enter your practice code"
+
+        
+        MDTextField:
+            hint_text: "Code"
+            id: codeField
+            
+        MDRaisedButton:
+            text:"Next"
+            on_release: app.setup.verifyPracCode(codeField.text)
+            md_bg_color: app.theme_cls.primary_color
+            
+        Widget:
+            size_hint_y: None
+            height:50
+            
+        MDFloatingActionButton:
+            id: back
+            icon: "backspace"
+            on_release: app.setup.sm.current = "INTRO"
+            md_bg_color: app.theme_cls.primary_color
+            
+    
+'''
+
+setupNewHelper = '''
+Screen:
+    name: "NEWPRAC"
+    MDBoxLayout:
+        orientation:"vertical"
+        padding: 50
+        spacing:20
+        
+        MDLabel:
+            font_style: "H3"
+            text: "Enter your organisation code"
+
+        
+        MDTextField:
+            hint_text: "Code"
+            id: codeField
+            
+        MDRaisedButton:
+            text:"Next"
+            on_release: app.setup.verifyOrgCode(codeField.text)
+            md_bg_color: app.theme_cls.primary_color
+            
+        Widget:
+            size_hint_y: None
+            height:50
+            
+        MDFloatingActionButton:
+            id: back
+            icon: "backspace"
+            on_release: app.setup.sm.current = "INTRO"
+            md_bg_color: app.theme_cls.primary_color
+    
+'''
+
+setupPracticeHelper = '''
+        
+Screen:
+    name: "SETUPPRACTICE"
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: 50
+        spacing:30
+        MDLabel:
+            text: "Make your practice"
+            font_style: "H3"
+            size_hint_y: None
+            height:40
+            
+        MDLabel:
+            text: "Enter your practice details below"
+            font_style: "Subtitle2"
+            size_hint_y: None
+            height:20
+            
+        GridLayout:
+            cols: 3
+            rows: 2
+            spacing: [50,0]
+            padding: 10
+            MDTextField:
+                id: pracNameEntry
+                hint_text: "Practice Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: adminNameEntry
+                hint_text: "System Admin Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: emailEntry
+                hint_text: "Practice Contact Email"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: phoneEntry
+                hint_text: "Pracitce Contact Number"
+                mode: "rectangle"
+               
+            MDTextField:
+                id: addy1Entry
+                hint_text: "Practice Address Line"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: postcodeEntry
+                hint_text: "Practice Postcode"
+                mode: "rectangle"
+                
+        MDBoxLayout:
+            orientation: "horizontal"
+            spacing:15
+            MDRaisedButton:
+                text: "Create"
+                md_bg_color: app.theme_cls.primary_color
+                on_release: app.setup.createPractice()
+            
+            MDSpinner:
+                size_hint:None,None
+                size: dp(40), dp(40)
+                active: False
+                id: spinner
+            
+                 
+'''
+
+setupAdminAccHelper = '''
+Screen:
+    name: "SETUPADMIN"
+    MDBoxLayout:
+        orientation:"vertical"
+        padding:50
+        spacing:30
+        MDLabel:
+            text: "Make your first account!"
+            font_style: "H3"
+            size_hint_y: None
+            height:40
+        MDLabel:
+            text: "This will be your practice admin account for OpthaBot"
+            font_style: "Subtitle2"
+            size_hint_y: None
+            height:20
+            
+        GridLayout:
+            cols: 3
+            rows: 2
+            spacing: [50,0]
+            padding: 10
+            MDTextField:
+                id: fnameEntry
+                hint_text: "First Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: lnameEntry
+                hint_text: "Last Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: emailEntry
+                hint_text: "Email"
+                mode: "rectangle"
+               
+            MDTextField:
+                id: passwordEntry
+                hint_text: "Password"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: usernameEntry
+                hint_text: "Username"
+                mode: "rectangle"
+                
+            Widget:
+                
+        MDBoxLayout:
+            orientation: "horizontal"
+            spacing:15
+            MDRaisedButton:
+                text: "Finish"
+                md_bg_color: app.theme_cls.primary_color
+                on_release: app.setup.createAdmin()
+            
+            MDSpinner:
+                size_hint:None,None
+                size: dp(40), dp(40)
+                active: False
+                id: spinner
+'''

@@ -10,21 +10,20 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.button import MDIconButton
 from Class.scan import Scan
 from Class.globalF import globalFuncs
-from Screens.HELPERS import viewUserHelper
+from Screens.HELPERS import viewPXHelper
 from functools import partial
 
-class ViewUserScreen(MDScreen):
+
+class ViewPXScreen(MDScreen):
     def __init__(self):
-        super(ViewUserScreen, self).__init__()
+        super(ViewPXScreen, self).__init__()
         self.name = "viewuser"
 
-
-        self.content = Builder.load_string(viewUserHelper)
+        self.content = Builder.load_string(viewPXHelper)
         self.listContent = []
         self.add_widget(self.content)
 
-
-    def insertUser(self,user):
+    def insertUser(self, user):
         self.user = user
         self.content.ids.fNameEntry.text = user.fname
         self.content.ids.lNameEntry.text = user.lname
@@ -35,37 +34,30 @@ class ViewUserScreen(MDScreen):
         self.content.ids.dateEntry.ids.dateEntry.text = user.dob
         self.content.ids.orgIDEntry.ids.numEntry.text = user.orgID
 
-
-        #remove previous scans
+        # remove previous scans
         [self.content.ids.listview.remove_widget(i) for i in self.listContent]
 
         scans = [Scan().initialiseFromDB(i) for i in globalFuncs.database.returnScansFromUser(user.orgID)]
         self.listContent = []
         for i in scans:
             card = ScanCard(i)
-            card.on_release = partial(self.showScan,i)
+            card.on_release = partial(self.showScan, i)
             self.listContent.append(card)
             self.content.ids.listview.add_widget(card)
             card.delButt.on_release = partial(self.deleteScan, card)
 
-
-
-
         return
 
-    def deleteScan(self,card):
+    def deleteScan(self, card):
         card.scan.dbobj.reference.delete()
         self.listContent.remove(card)
         self.content.ids.listview.remove_widget(card)
 
-
-
-    def showScan(self,scan,*args):
+    def showScan(self, scan, *args):
         self.parent.current = "VIEWSCAN"
         self.parent.current_screen.insertScan(scan)
 
-
-    def updateUserDetails(self,*args):
+    def updateUserDetails(self, *args):
         result = self.user.updatePXdetails(
             self.content.ids.fNameEntry.text,
             self.content.ids.lNameEntry.text,
@@ -84,7 +76,7 @@ class ViewUserScreen(MDScreen):
         return
 
     def autoGenID(self):
-        self.content.ids.orgIDEntry.ids.numEntry.text = globalFuncs.database.generateNewORGID()
+        self.content.ids.orgIDEntry.ids.numEntry.text = globalFuncs.database.generateNewIDFromDB("orgID", u"patients")
 
     def selectCalendar(self):
         date_dialog = MDDatePicker(callback=self.setDate)
@@ -92,22 +84,14 @@ class ViewUserScreen(MDScreen):
         return
 
 
-class ClickableTextFieldRound(RelativeLayout):
-    text = StringProperty()
-    hint_text = StringProperty()
-
-class ClickableTextFieldRound2(RelativeLayout):
-    text = StringProperty()
-    hint_text = StringProperty()
-
 
 class ScanCard(MDCard):
-    def __init__(self,scan):
+    def __init__(self, scan):
         super(ScanCard, self).__init__()
         self.scan = scan
         self.orientation = "horizontal"
         self.spacing = 15
-        self.md_bg_color = (216/255,216/255,216/255,1)
+        self.md_bg_color = (216 / 255, 216 / 255, 216 / 255, 1)
         self.size_hint_x = None
         self.padding = 10
         self.width = 250
@@ -117,10 +101,10 @@ class ScanCard(MDCard):
             print(scan.postProcessDir)
         except:
             scan.grabImage()
-        self.add_widget(AsyncImage(source = scan.postProcessDir,size_hint_x = None, width = 60))
+        self.add_widget(AsyncImage(source=scan.postProcessDir, size_hint_x=None, width=60))
 
         self.layout = MDBoxLayout(orientation="vertical", spacing=5)
-        self.layout.add_widget(MDLabel(text = "Taken {}".format(scan.scanTime.strftime("%d/%m/%Y"))))
-        self.delButt = MDIconButton(icon = "delete")
+        self.layout.add_widget(MDLabel(text="Taken {}".format(scan.scanTime.strftime("%d/%m/%Y"))))
+        self.delButt = MDIconButton(icon="delete")
         self.layout.add_widget(self.delButt)
         self.add_widget(self.layout)

@@ -14,8 +14,12 @@ class SettingsScreen(MDScreen):
         self.add_widget(self.content)
         self.setupSwitchView()
 
+        # will change this later to just have the name
         self.org = globalFuncs.permaSet["org"]
         self.practice = globalFuncs.permaSet["practice"]
+
+        self.content.ids.orgname.text = self.org
+        self.content.ids.pracname.text = self.practice
 
 
     def setupSwitchView(self):

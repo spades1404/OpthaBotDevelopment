@@ -8,8 +8,6 @@ from kivymd.uix.picker import MDDatePicker
 from Screens.HELPERS import addUserHelper
 from Class.globalF import globalFuncs
 from threading import Thread
-import string
-import random
 
 class AddUserScreen(MDScreen):
     def __init__(self):
@@ -66,7 +64,7 @@ class AddUserScreen(MDScreen):
                 self.content.ids.spinner.active = False
                 return
 
-            result = globalFuncs.database.addNewUser(fname,lname,email,id,postcode,phone,addy,dob)
+            result = globalFuncs.database.addNewPX(fname, lname, email, id, postcode, phone, addy, dob)
             self.content.ids.infoLabel.text = "Done!"
             self.content.ids.spinner.active = False
             return
@@ -77,7 +75,7 @@ class AddUserScreen(MDScreen):
         return
 
     def autoGenID(self):
-        self.content.ids.orgIDEntry.ids.numEntry.text = globalFuncs.database.generateNewORGID()
+        self.content.ids.orgIDEntry.ids.numEntry.text = globalFuncs.database.generateNewIDFromDB("orgID", u"patients")
 
     def selectCalendar(self):
         date_dialog = MDDatePicker(callback=self.setDate)

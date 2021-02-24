@@ -107,7 +107,8 @@ class HomeScreen(MDScreen):
                         globalFuncs.database.uploadScan(scan)
                     self.updateInfoText("Uploading Scan To Server")
                     self.updateInfoText("Done!")
-                except:
+                except Exception as e:
+                    print(e)
                     self.updateInfoText("Image not compatible")
 
             globalFuncs.exit_event.set()

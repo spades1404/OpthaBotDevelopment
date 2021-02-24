@@ -1,7 +1,7 @@
 {
-  "devMode" : "True",
-  "firstBoot" : "False",
-  "org" : "None",
-  "practice" : "None",
-  "facade" : "True"
+  "devMode": "False",
+  "firstBoot": false,
+  "org": "zPHE83liYXWAhoCLHe3m",
+  "practice": "EmH66eiiAJA64i6yEsyu",
+  "facade": "True"
 }

@@ -25,6 +25,7 @@ class LogInScreen(MDScreen):
                 globalFuncs.currentUser = User(result)
                 self.parent.current = "PRIMARY"
                 self.parent.current_screen.content.ids.navBarSubtitle.text = "{} {}".format(globalFuncs.currentUser.fname,globalFuncs.currentUser.lname)
+                self.parent.current_screen.configureMenu(globalFuncs.currentUser.accessLevel)
             else:
                 print("Failed")
                 self.logInFailed()
@@ -33,9 +34,9 @@ class LogInScreen(MDScreen):
 
         def bypassLogin():  # FOR DEV PURPOSE
             self.parent.current = "PRIMARY"
+            self.parent.current_screen.configureMenu(0)
 
-
-        Thread(target=bypassLogin, daemon=True).start() #bypasses login for us
+        Thread(target=function, daemon=True).start()  # bypasses login for us
         #Thread(target=function, daemon=True).start()
 
     def logInFailed(self):

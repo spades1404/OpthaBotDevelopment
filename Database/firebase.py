@@ -2,21 +2,25 @@
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore as fs
-import pyrebase #This one lets use access firebase storage - others do not
-import json #For reading our config files
-from difflib import SequenceMatcher #For search queries
+import pyrebase  # This one lets use access firebase storage - others do not
+import json  # For reading our config files
+from difflib import SequenceMatcher  # For search queries
 import datetime
 import string
 import random
 
+# we are importing these classes seperately and not through the global funcs because globalfuncs depends on having access to the database class which causes a ciruclar import
 from Class.validation import Validation
 from Class.directories import Directories
 from Class.hashing import Passwords
 from Class.user import Patient
+
 import pytz
 import os
-class Database(): #Defining the firebase class inside the main window class because of PyQt class handling oddities
-    def __init__(self, dirs = None ):
+
+
+class Database():  # Defining the firebase class inside the main window class because of PyQt class handling oddities
+    def __init__(self, dirs=None):
         self.dirs = Directories()
         self.config = self.js_r(self.dirs.configFile)  # Firebase access key
         self.key = credentials.Certificate(self.dirs.keyFile)  # Firebase private key
@@ -27,9 +31,10 @@ class Database(): #Defining the firebase class inside the main window class beca
 
         self.fsdb = fs.client()  # Object for accessing the firebase - where descriptive data is
 
+        self.initPracticeCode()
 
-
-
+    def initPracticeCode(self):
+        self.practice = self.js_r(self.dirs.appPermaSets)["practice"]
 
     #############FIREBASE STORAGE################
     def saveToFirebaseStorage(self, filePath, pathOnServer):  # saving a file to our store
@@ -38,6 +43,7 @@ class Database(): #Defining the firebase class inside the main window class beca
     def downloadFromFirebaseStorage(self, pathOnServer, outputName):  # Downloading a file from the store
         if os.path.exists(outputName) == False:
             self.storage.child(pathOnServer).download(outputName)  # Grabs our file from the server and downloads
+
     ##################################################
 
 
@@ -78,12 +84,6 @@ class Database(): #Defining the firebase class inside the main window class beca
     #    if Validation().validatePlainString(dic["name"],numCheck=True) or Validation().validatePlainString(dic["mainAdmin"],numCheck=True)  or Validation().checkEmail(dic["contactEmail"]) or Validation().checkNumber(dic["contactNum"]) or Validation().checkPostcode(dic["postcode"]) or Validation().validatePlainString(["address"]) or Validation().validatePlainString(dic["city"],numCheck=True) == False:
     #        return "Invalid Details Cannot Make Org"
 
-
-
-
-
-
-
     def returnCollectionContents(self, collectionDir):
         query = self.fsdb.collection(collectionDir)
         for doc in query.stream():
@@ -93,11 +93,16 @@ class Database(): #Defining the firebase class inside the main window class beca
     def makeUserAdmin(self, tag):
         return
 
-    def createUser(self,fName = "", lName = "", email = "", id="", postcode= "", phone="",addy=""):
-
-
-        return True
-
+    def createUser(self, fname, lname, email, user, passw, access, id):
+        return self.fsdb.collection(u"users").add({
+            "accessLevel": access,
+            "email": email,
+            "fName": fname,
+            "lName": lname,
+            "username": user,
+            "password": passw,
+            "practice": id
+        })[1]
 
     def returnUserFromID(self, ID):
         query = self.fsdb.collection(u"users")
@@ -106,14 +111,12 @@ class Database(): #Defining the firebase class inside the main window class beca
                 return doc.to_dict()
 
     def signIn(self, username, password):
-        query = self.fsdb.collection(u"users")
-        db = query.stream()
-        for i in db:
-            data = i.to_dict()
+        db = self.fsdb.collection(u"users").where("practice", "==", self.practice).where("username", "==",
+                                                                                         username).get()
 
-            if data["username"] == username:
-                if Passwords().confirmPassDeprecated(password,data["password"]) == True:
-                    return i
+        print(db)
+        if Passwords().confirmPassDeprecated(password, db[0].to_dict()["password"]) == True:
+            return db[0]
 
         return None
 
@@ -147,11 +150,12 @@ class Database(): #Defining the firebase class inside the main window class beca
         serverLoc = "Images/" + scan.fileName
         self.saveToFirebaseStorage(scan.postProcessDir,serverLoc)
         scanRes = {
-            "condition":scan.result,
-            "custID":scan.custID,
-            "location":serverLoc,
-            "time":scan.scanTime,
-            "diagnosis":""
+            "condition": scan.result,
+            "custID": scan.custID,
+            "location": serverLoc,
+            "time": scan.scanTime,
+            "diagnosis": "",
+            "practice": self.practice
         }
 
         result = self.fsdb.collection(u"images").add(scanRes)
@@ -161,35 +165,38 @@ class Database(): #Defining the firebase class inside the main window class beca
 
         return
 
-    def addNewUser(self,fname,lname,email,id,postcode,phone,addy,date):
+    def addNewPX(self, fname, lname, email, id, postcode, phone, addy, date):
         dict = {
             "fName": fname,
             "lName": lname,
-            "email":email,
+            "email": email,
             "orgID": id,
-            "postcode" : postcode,
-            "phoneNumber" : phone,
-            "addressLine" : addy,
-            "dob" : date
+            "postcode": postcode,
+            "phoneNumber": phone,
+            "addressLine": addy,
+            "dob": date,
+            "practice": self.practice
         }
 
-        self.fsdb.collection(u"patients").add(dict)
-        for i in self.fsdb.collection(u"patients").stream():
-            if i.to_dict()["orgID"]  == dict["orgID"]:
-                return i.id
+        return self.fsdb.collection(u"patients").add(dict)[0].id
 
+    def similar(self, a, b):
+        return SequenceMatcher(None, a, b).ratio()
 
-    def similar(self,a,b):
-        return SequenceMatcher(None,a,b).ratio()
+    def generateNewIDFromDB(self, field, collection):
+        try:
+            ids = [i.to_dict()[field] for i in self.fsdb.collection(collection).stream()]
+            x = ids[0]  # if the collection is empty its safe to return any new string
+        except:
+            x = ''.join(random.choice(string.ascii_uppercase) for i in range(6))
+            return x
 
-    def generateNewORGID(self):
-        ids = [i.to_dict()["orgID"] for i in self.fsdb.collection(u"patients").stream()]
-        x = ids[0]
         while x in ids:
             x = ''.join(random.choice(string.ascii_uppercase) for i in range(6))
 
         return x
-    def compareDate(self,date1,date2):
+
+    def compareDate(self, date1, date2):
 
         if date1.strftime("%d:%m:%Y") == date2.strftime("%d:%m:%Y"):
             return True
@@ -198,8 +205,9 @@ class Database(): #Defining the firebase class inside the main window class beca
 
     def searchPX(self,fName = "", lName = "", email = "", id="", postcode= "", phone="",addy="",date=None):
         #THIS METHOD IS VERY SLOW FOR LARGE RECORDS
-        collection = self.fsdb.collection(u"patients").stream() #This has all of our patient records
-        scoreList = [] #This will store a list of simmilarity scores for each record
+        collection = self.fsdb.collection(u"patients").where("practice", "==",
+                                                             self.practice).get()  # This has all of our patient records
+        scoreList = []  #This will store a list of simmilarity scores for each record
         allRecords = []
 
         for i in collection:
@@ -250,11 +258,16 @@ class Database(): #Defining the firebase class inside the main window class beca
         record = self.fsdb.collection(u"images").document(sourceID)
         record.update({"diagnosis": cond})
 
-    def returnRecentScans(self,filter): #filter =1 for past day =2 for past week =3 for past month
-        result = self.fsdb.collection(u"images").order_by("time",direction = "DESCENDING").get()
+    def returnRecentScans(self, filter):  # filter =1 for past day =2 for past week =3 for past month
+        try:
+            result = self.fsdb.collection(u"images").where("practice", "==", self.practice).get()
+        except Exception as e:
+            print(e)
+            print("no scans :(")
+            return []
         start = datetime.datetime.now()
 
-        d=1
+        d = 1
         if filter == 1:
             d = 1
         elif filter == 2:
@@ -267,13 +280,28 @@ class Database(): #Defining the firebase class inside the main window class beca
 
         return filtered
 
-    def returnScansFromUser(self,id):
-        return self.fsdb.collection(u"images").where("custID","==",id).get()
+    def returnScansFromUser(self, id):
+        return self.fsdb.collection(u"images").where("custID", "==", id).get()
 
+    def returnPracticeByLink(self, code):
+        return self.fsdb.collection(u"practices").where("linkCode", "==", code).get()
 
+    def returnOrgByLink(self, code):
+        return self.fsdb.collection(u"organisations").where("linkCode", "==", code).get()
 
-
-
+    def addNewPractice(self, name, admin, email, phone, addr, post, org):
+        data = {
+            "name": name,
+            "adminName": admin,
+            "contactEmail": email,
+            "contactNum": phone,
+            "address": addr,
+            "postcode": post,
+            "organisation": org,
+            "linkCode": self.generateNewIDFromDB("linkCode", u"practices")
+        }
+        x = self.fsdb.collection(u"practices").add(data)[1]
+        return x
 
 
 if __name__ == "__main__":

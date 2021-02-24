@@ -17,7 +17,7 @@ class Profile(): #Base profile super class
 class User(Profile):
     def __init__(self,obj):
         super(User, self).__init__(obj)
-        self.accessLevel = self.details["accessLevel"]
+        self.accessLevel = int(self.details["accessLevel"])
         self.username = self.details["username"]
         return
 

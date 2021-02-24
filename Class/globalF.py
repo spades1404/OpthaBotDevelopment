@@ -20,9 +20,15 @@ class GLOBAL(): #This will store global information that may need to be accessed
         self.getAppSettings()
 
         self.exit_event = Event()
-    def updateProgressBar(self,progressRange, timeLapse, target): #the filled example will run for 100 seconds
+
+        self.dialog = None  # This wil handle all dialog boxes for the program - its easier to manage
+
+    def closeDialog(self, *args):
+        self.dialog.dismiss()
+
+    def updateProgressBar(self, progressRange, timeLapse, target):  # the filled example will run for 100 seconds
         self.exit_event.clear()
-        for i in range(progressRange[0],progressRange[1]):
+        for i in range(progressRange[0], progressRange[1]):
             target.value = i
             time.sleep(timeLapse)
 
@@ -58,9 +64,6 @@ class GLOBAL(): #This will store global information that may need to be accessed
             return True
         else:
             return False
-
-
-
 
 
 globalFuncs = GLOBAL() #We need the class to be static from start!
