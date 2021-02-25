@@ -15,7 +15,11 @@ Next, you will need to download the repository to your local machine. Create the
 
     git clone https://github.com/spades1404/OpthaBotDevelopment opthabot
     
-Then open up a command prompt in the root directory of the clone (inside the folder called opthabot), now you will need to setup the venv to run the program in. Run these commands to install your venv:
+Now we need to get to the root directory:
+
+    cd opthabot
+    
+Now you will need to setup the venv to run the program in. Run these commands to install your venv:
 
     python -m pip install --upgrade pip setuptools wheel virtualenv
     python -m virtualenv kivy_venv
