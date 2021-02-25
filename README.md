@@ -46,4 +46,8 @@ Whenever you want to run the program again all you need to do is run the command
     
 Enjoy!
 
+*Im working on a batch script that will hopefully do this all for you*
+
+Now that you've got the program running (hopefully) open the example folder so you have a full walkthrough of what to do.
+
 (I promise there will be an exe soon!)  :smiling_face_with_three_hearts:
