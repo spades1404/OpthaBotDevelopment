@@ -1,5 +1,7 @@
+-ivymd @ https://github.com/kivymd/KivyMD/archive/master.zip
 absl-py==0.10.0
 altgraph==0.17
+appdirs==1.4.4
 asgiref==3.3.1
 astunparse==1.6.3
 backcall==0.2.0
@@ -14,6 +16,7 @@ colorama==0.4.4
 cryptography==3.1.1
 cycler==0.10.0
 decorator==4.4.2
+distlib==0.3.1
 Django==3.1.7
 dnspython==2.0.0
 docutils==0.16
@@ -53,11 +56,11 @@ jwcrypto==0.8
 katna==0.4.1.4
 Keras-Preprocessing==1.1.2
 Kivy==2.0.0
-kivymd==0.104.1
 kivy-deps.angle==0.3.0
 kivy-deps.glew==0.3.0
 kivy-deps.sdl2==0.3.1
 Kivy-Garden==0.1.4
+kivymd==0.104.1
 kiwisolver==1.2.0
 Markdown==3.3.2
 matplotlib==3.3.2
@@ -69,6 +72,7 @@ numpy==1.18.5
 oauth2client==4.1.3
 oauthlib==3.1.0
 opencv-contrib-python==4.4.0.44
+openpyxl==3.0.5
 opt-einsum==3.3.0
 pandas==1.1.3
 parso==0.7.1
@@ -125,6 +129,7 @@ tqdm==4.50.2
 traitlets==5.0.5
 uritemplate==3.0.1
 urllib3==1.25.11
+virtualenv==20.4.2
 wcwidth==0.2.5
 Werkzeug==1.0.1
 wrapt==1.12.1
