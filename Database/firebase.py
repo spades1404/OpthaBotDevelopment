@@ -178,7 +178,7 @@ class Database():  # Defining the firebase class inside the main window class be
             "practice": self.practice
         }
 
-        return self.fsdb.collection(u"patients").add(dict)[0].id
+        return self.fsdb.collection(u"patients").add(dict)[1].id
 
     def similar(self, a, b):
         return SequenceMatcher(None, a, b).ratio()
@@ -210,16 +210,23 @@ class Database():  # Defining the firebase class inside the main window class be
         scoreList = []  #This will store a list of simmilarity scores for each record
         allRecords = []
 
+
         for i in collection:
             x = i.to_dict()
-            s1 = (self.similar(fName,x["fName"]))/7
-            s2 = (self.similar(lName, x["lName"]))/7
-            s3 = (self.similar(email, x["email"]))/7
-            s4 = (self.similar(id, x["orgID"]))/3 #we give this a higher weighting
-            s5 = (self.similar(postcode, x["postcode"]))/7
-            s6 = (self.similar(phone, x["phoneNumber"]))/7
-            s7 = (self.similar(addy, x["addressLine"]))/7
-
+            if fName.replace(" ", "") != "":
+                s1 = (self.similar(fName, x["fName"])) / 7
+            if lName.replace(" ", "") != "":
+                s2 = (self.similar(lName, x["lName"])) / 7
+            if email.replace(" ", "") != "":
+                s3 = (self.similar(email, x["email"])) / 7
+            if id.replace(" ", "") != "":
+                s4 = (self.similar(id, x["orgID"])) / 3  # we give this a higher weighting
+            if postcode.replace(" ", "") != "":
+                s5 = (self.similar(postcode, x["postcode"])) / 7
+            if phone.replace(" ", "") != "":
+                s6 = (self.similar(phone, x["phoneNumber"])) / 7
+            if addy.replace(" ", "") != "":
+                s7 = (self.similar(addy, x["addressLine"])) / 7
 
             try:
                 y = x["dob"]
@@ -228,7 +235,7 @@ class Database():  # Defining the firebase class inside the main window class be
                 else:
                     s8 = 0
             except Exception as e:
-                s8=0
+                s8 = 0
 
 
             total = s1+s2+s3+s4+s5+s6+s7+s8
@@ -303,6 +310,8 @@ class Database():  # Defining the firebase class inside the main window class be
         x = self.fsdb.collection(u"practices").add(data)[1]
         return x
 
+    def returnUsers(self):
+        return self.fsdb.collection(u"users").where("practice", "==", self.practice).get()
 
 if __name__ == "__main__":
     db = Database()

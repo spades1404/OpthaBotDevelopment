@@ -75,7 +75,7 @@ class HomeScreen(MDScreen):
             if bool(globalFuncs.appSettings["Require Customer ID's on Scan"]) == True and (self.content.ids.pxidField.text).replace(" ", "") == "":
                 MDDialog(
                     title="Error",
-                    text="No ID entered",
+                    text="No ID Has been entered, please enter one and retry",
                 ).open()
                 globalFuncs.exit_event.set()
                 self.content.ids.progressBar.value = 100
@@ -87,6 +87,8 @@ class HomeScreen(MDScreen):
                 self.updateInfoText("File is not an image - aborted")
                 globalFuncs.exit_event.set()
                 return
+
+
             else:
                 try:
                     scan = Scan().initialiseFromProg(filename)

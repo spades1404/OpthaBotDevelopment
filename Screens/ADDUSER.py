@@ -4,15 +4,17 @@ from kivymd.uix.dialog import MDDialog
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.properties import StringProperty
 from kivymd.uix.picker import MDDatePicker
+from kivymd.uix.button import MDFlatButton
 
-from Screens.HELPERS import addUserHelper
+from Screens.HELPERS import addPXHelper
 from Class.globalF import globalFuncs
 from threading import Thread
+from functools import partial
 
 class AddUserScreen(MDScreen):
     def __init__(self):
         super(AddUserScreen, self).__init__()
-        self.content = Builder.load_string(addUserHelper)
+        self.content = Builder.load_string(addPXHelper)
         self.add_widget(self.content)
         self.name = "adduser"
 
@@ -29,45 +31,103 @@ class AddUserScreen(MDScreen):
             postcode = (self.content.ids.postcodeEntry.text).replace(" ", "")
             dob = (self.content.ids.dateEntry.ids.dateEntry.text).replace(" ", "")
 
-            def validate():
-                f = [fname, lname, email, id, postcode, phone, addy]
-                for i in [i.replace(" ", "") for i in f]:
-                    if i == "":
-                        return "Not all fields filled"
+            f = [fname, lname, email, id, postcode, phone, addy]
+            c = 0
+            for i in f:
+                if i.replace(" ", "") == "":
+                    c += 1
 
-                if globalFuncs.validation.validatePlainString(fname,numCheck=True) == False or globalFuncs.validation.validatePlainString(lname, numCheck=True) == False:
-                    return "Name must not have numbers"
+            if c > 0:
+                globalFuncs.dialog = MDDialog(
+                    title="Would you like to continue?",
+                    text="There are missing fields, would you like to continue anyways?",
+                    buttons=[
+                        MDFlatButton(text="Yes"),
+                        MDFlatButton(text="No")
+                    ],
+                    auto_dismiss=False
+                )
+                globalFuncs.dialog.buttons[0].on_release = partial(execute, fname, lname, email, id, postcode, phone,
+                                                                   addy, dob)
+                globalFuncs.dialog.buttons[1].on_release = globalFuncs.dialog.dismiss
 
-                if globalFuncs.validation.checkEmail(email) == False and globalFuncs.appSettings["Always verify emails"] == True:
-                    return "Invalid Email"
+                globalFuncs.dialog.open()
+                self.content.ids.spinner.active = False
+            return
 
-                if globalFuncs.validation.validatePlainString(id) ==False:
-                    return "ID is not a valid string"
-
-                if globalFuncs.validation.checkNumber(phone) == False and globalFuncs.appSettings["Always check phone numbers"] == True:
-                    return "Invalid Number"
-
-                if globalFuncs.validation.checkDate(dob) == False:
-                    return "Invalid Date"
-
-                #if globalFuncs.validation.validatePlainString(addy) == False:
-                #    return "Address is not a valid string"
-
-                if globalFuncs.validation.checkPostcode(postcode) == False:
-                    return "Postcode is not valid"
-
-                return True
-
-            result = validate()
-            if result != True:
-                MDDialog(title="Error",text=result).open()
+        def execute(fname, lname, email, id, postcode, phone, addy, dob, *args):
+            self.content.ids.spinner.active = True
+            globalFuncs.dialog.dismiss()
+            if globalFuncs.validation.validatePlainString(fname, numCheck=True) == False and fname.replace(" ",
+                                                                                                           "") != "" or globalFuncs.validation.validatePlainString(
+                    lname, numCheck=True) == False and lname.replace(" ", "") != "":
+                globalFuncs.dialog = MDDialog(
+                    title="Error",
+                    text="The names entered are not valid",
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                )
+                globalFuncs.dialog.open()
                 self.content.ids.spinner.active = False
                 return
 
+            if globalFuncs.validation.checkEmail(email) == False and globalFuncs.appSettings[
+                "Always verify emails"] == True and email.replace(" ", "") != "":
+                globalFuncs.dialog = MDDialog(
+                    title="Error",
+                    text="The email entered is not valid",
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                )
+                globalFuncs.dialog.show()
+                self.content.ids.spinner.active = False
+                return
+
+            if globalFuncs.validation.validatePlainString(id) == False:
+                globalFuncs.dialog = MDDialog(
+                    title="Error",
+                    text="The ID entered is not valid, an ID is a required field",
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                )
+                globalFuncs.dialog.open()
+                self.content.ids.spinner.active = False
+                return
+
+            if globalFuncs.validation.checkNumber(phone) == False and globalFuncs.appSettings[
+                "Always check phone numbers"] == True and phone.replace(" ", "") != "":
+                globalFuncs.dialog = MDDialog(
+                    title="Error",
+                    text="The number entered is not valid",
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                )
+                globalFuncs.dialog.open()
+                self.content.ids.spinner.active = False
+                return
+
+            if globalFuncs.validation.checkDate(dob) == False and dob.replace(" ", "") != "":
+                globalFuncs.dialog = MDDialog(
+                    title="Error",
+                    text="The date of birth entered is not valid",
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                )
+                globalFuncs.dialog.open()
+                self.content.ids.spinner.active = False
+                return
+
+            # if globalFuncs.validation.validatePlainString(addy) == False:
+            #    return "Address is not a valid string"
+
+            if globalFuncs.validation.checkPostcode(postcode) == False and postcode.replace(" ", "") != "":
+                globalFuncs.dialog = MDDialog(
+                    title="Error",
+                    text="The postcode entered is not valid",
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                )
+                globalFuncs.dialog.open()
+                self.content.ids.spinner.active = False
+                return
             result = globalFuncs.database.addNewPX(fname, lname, email, id, postcode, phone, addy, dob)
             self.content.ids.infoLabel.text = "Done!"
             self.content.ids.spinner.active = False
-            return
+
         Thread(target=function, daemon=True).start()
 
     def setDate(self, date):

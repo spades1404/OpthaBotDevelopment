@@ -30,7 +30,6 @@ class Patient(Profile):
         self.orgID = self.details["orgID"]
         self.phoneNum = self.details["phoneNumber"]
         self.postcode = self.details["postcode"]
-        self.scans = self.details["scans"]
         return
 
 

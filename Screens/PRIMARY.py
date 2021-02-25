@@ -13,7 +13,7 @@ from Screens.SCANS import ScanListViewScreen
 from Screens.VIEWSCAN import ViewScanScreen
 from Screens.USERS import ViewUsersScreen
 
-
+from Class.globalF import globalFuncs
 
 
 class PrimaryScreen(MDScreen):
@@ -80,6 +80,7 @@ class PrimaryScreen(MDScreen):
 
         self.logoutItem = OneLineIconListItem(
             text="Logout",
+            on_release=self.logout
         )
         self.logoutItem.add_widget(IconLeftWidget(icon="logout-variant"))
 
@@ -99,4 +100,10 @@ class PrimaryScreen(MDScreen):
 
     def setDrawer(self, name, *args):
         self.content.ids.primaryScreenManager.current = name
-        self.content.ids.navDraw.toggle_nav_drawer()
+        self.content.ids.navDraw.set_state("toggle")
+
+    def logout(self, *args):
+
+        [self.content.ids.listMenu.remove_widget(i) for i in self.menuItems]
+        globalFuncs.currentUser = None
+        self.parent.current = "LOGIN"

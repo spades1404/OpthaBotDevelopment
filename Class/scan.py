@@ -14,6 +14,7 @@ class Scan():
         self.originalImage = Image.open(fileLoc)
         self.postProcessImage = self.preProcessImage(self.location)
         self.fileName = r"{}.jpg".format(''.join(random.choices(string.ascii_uppercase + string.digits, k=15)))
+        self.postProcessImage.save(self.fileName)
         self.custID = ""
         self.serverID = None
         self.uploaded = False

@@ -69,7 +69,7 @@ Screen:
 '''
 
 primaryScreenHelper = '''
-NavigationLayout:
+Screen:
     ScreenManager:
         Screen:
             BoxLayout:
@@ -77,7 +77,7 @@ NavigationLayout:
                 MDToolbar:
                     title: "OpthaBot"
                     elevation: 10
-                    left_action_items: [["menu", lambda x: navDraw.toggle_nav_drawer()]]
+                    left_action_items: [["menu", lambda x: navDraw.set_state("toggle")]]
                     
                     
                 ScreenManager:
@@ -172,11 +172,11 @@ Screen:
         on_release: app.loginScreen.login()
         
     MDSpinner:
+        active:False
         id: spinner
         size_hint: None, None
         size: dp(32),dp(32)
         pos_hint: {"center_x":0.5,"center_y":0.2}
-        active: False
         
         
 '''
@@ -329,32 +329,33 @@ Screen:
                 text:"Save Settings"
                 halign:"center"
                 on_release: app.primaryScreen.settingsScreen.saveSettings()
-        ScrollView:
-            id: detailsView
-            MDBoxLayout:
-                orientation: "vertical"
-                spacing: 20
-                padding: 10
-                MDLabel:
-                    text: "Software Details"
-                    font_style: "H4"
-                    size_hint_y:None
-                    height:20
-                MDTextField:
-                    id: orgname
-                    mode:"rectangle"
-                    hint_text: "Organisation Name"
-                MDTextField:
-                    id: pracname
-                    mode:"rectangle"
-                    hint_text: "Practice Name"
+        
+        MDBoxLayout:
+            orientation:"vertical"
+            spacing:25
+            MDLabel:
+                text: "Software Details"
+                font_style: "H4"
+                size_hint_y:None
+                height:34
+                
+            MDTextField:
+                id: orgname
+                disabled: True
+                hint_text: "Organisation Name"
+            MDTextField:
+                id: pracname
+                disabled:True
+                hint_text: "Practice Name"
+                
+            Widget:
 
                 
                 
                 
 '''
 
-addUserHelper = '''
+addPXHelper = '''
 <DateSelector@RelativeLayout>:
     size_hint_y: None
     height: dateEntry.height
@@ -469,7 +470,7 @@ Screen:
                 id: infoLabel
                 text:""
                 size_hint_y: None
-                height:15
+                height:10
                 font_style:"Caption"
                     
         MDLabel: 
@@ -701,7 +702,7 @@ Screen:
                 id: field
                 hint_text: "Diagnosis"
                 on_focus: if self.focus: app.primaryScreen.viewSingleScanScreen.menu.open()
-                
+                text:
             MDTextField:
                 id: orgid
                 hint_text: "Patient ID"
@@ -962,16 +963,18 @@ Screen:
                 id: emailEntry
                 hint_text: "Email"
                 mode: "rectangle"
+                
+            MDTextField:
+                id: usernameEntry
+                hint_text: "Username"
+                mode: "rectangle"
                
             MDTextField:
                 id: passwordEntry
                 hint_text: "Password"
                 mode: "rectangle"
                 
-            MDTextField:
-                id: usernameEntry
-                hint_text: "Username"
-                mode: "rectangle"
+
                 
             Widget:
                 
@@ -988,4 +991,176 @@ Screen:
                 size: dp(40), dp(40)
                 active: False
                 id: spinner
+'''
+
+viewAllUsersHelper = '''
+Screen:
+    name: "VIEWALL"
+    MDBoxLayout:
+        orientation: "vertical"
+        padding:40
+        spacing:25
+        
+        MDLabel:
+            text: "Users"
+            font_style:"H3"
+            size_hint_y:None
+            height: 30
+            
+        MDSeparator:
+            
+        ScrollView:
+            MDList:
+                id: listview
+                
+        MDFloatingActionButton:
+            id: back
+            icon: "plus"
+            on_release: app.primaryScreen.viewUsers.sm.current = "ADDUSER"
+            md_bg_color: app.theme_cls.primary_color
+'''
+
+addUserHelper = '''
+Screen:
+    name:"ADDUSER"
+    MDBoxLayout:
+        padding:40
+        spacing:20
+        orientation: "vertical"
+        
+        MDLabel:
+            text: "Add User"
+            font_style: "H3"
+            size_hint_y:None
+            height: 30
+            
+        MDSeparator:
+        
+        GridLayout:
+            cols: 3
+            rows: 2
+            spacing: [50,0]
+            padding: 10
+            MDTextField:
+                id: fnameEntry
+                hint_text: "First Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: lnameEntry
+                hint_text: "Last Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: emailEntry
+                hint_text: "Email"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: usernameEntry
+                hint_text: "Username"
+                mode: "rectangle"
+               
+            MDTextField:
+                id: passwordEntry
+                hint_text: "Password"
+                mode: "rectangle"
+            
+                
+            MDRaisedButton:
+                text:"Select Access Level"
+                id:setacc
+                on_release:app.primaryScreen.viewUsers.setAccessLevel("ADDUSER")
+        MDBoxLayout:
+            orientation: "horizontal"
+            spacing:15
+            MDRaisedButton:
+                text: "Create"
+                md_bg_color: app.theme_cls.primary_color
+                on_release: app.primaryScreen.viewUsers.addUser()
+            
+            MDSpinner:
+                size_hint:None,None
+                size: dp(40), dp(40)
+                active: False
+                id: spinner
+        Widget:
+                
+        MDFloatingActionButton:
+            id: back
+            icon: "backspace"
+            on_release: app.primaryScreen.viewUsers.sm.current = "VIEWALL"
+            md_bg_color: app.theme_cls.primary_color
+        
+'''
+
+viewUserHelper = '''
+Screen:
+    name: "VIEWUSER" 
+    MDBoxLayout:
+        padding:40
+        spacing:20
+        orientation: "vertical"
+        
+        MDLabel:
+            text: "View User"
+            font_style: "H3"
+            size_hint_y:None
+            height: 30
+            
+        MDSeparator:
+        
+        GridLayout:
+            cols: 3
+            rows: 2
+            spacing: [50,0]
+            padding: 10
+            MDTextField:
+                id: fnameEntry
+                hint_text: "First Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: lnameEntry
+                hint_text: "Last Name"
+                mode: "rectangle"
+                
+            MDTextField:
+                id: emailEntry
+                hint_text: "Email"
+                mode: "rectangle"
+            MDTextField:
+                id: usernameEntry
+                hint_text: "Username"
+                mode: "rectangle"
+               
+            MDTextField:
+                id: passwordEntry
+                hint_text: "Password"
+                mode: "rectangle"
+                
+                
+            MDRaisedButton:
+                text:"Select Access Level"
+                id:setacc
+                on_release:app.primaryScreen.viewUsers.setAccessLevel("VIEWUSER")
+        MDBoxLayout:
+            orientation: "horizontal"
+            spacing:15
+            MDRaisedButton:
+                text: "Update"
+                md_bg_color: app.theme_cls.primary_color
+                on_release: app.primaryScreen.viewUsers.updateUser()
+            
+            MDSpinner:
+                size_hint:None,None
+                size: dp(40), dp(40)
+                active: False
+                id: spinner
+        Widget:
+        MDFloatingActionButton:
+            id: back
+            icon: "backspace"
+            on_release: app.primaryScreen.viewUsers.sm.current = "VIEWALL"
+            md_bg_color: app.theme_cls.primary_color
 '''

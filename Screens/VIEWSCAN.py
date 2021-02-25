@@ -33,8 +33,8 @@ class ViewScanScreen(MDScreen):
         self.menu = MDDropdownMenu(
             caller=self.content.ids.field,
             items=menuItems,
-            position="bottom",
             width_mult=4,
+
         )
         self.menu.bind(on_release=self.set_item)
 
@@ -65,11 +65,11 @@ class ViewScanScreen(MDScreen):
 
 
     def set_item(self, instance_menu, instance_menu_item):
-        print(instance_menu,instance_menu_item)
         def set_item(interval):
             self.content.ids.field.text = instance_menu_item.text
             instance_menu.dismiss()
-            self.menu.dismiss()
+            print(instance_menu_item.text)
+            self.content.ids.field.text = instance_menu_item.text
         Clock.schedule_once(set_item, 0.5)
 
     def dud(self):

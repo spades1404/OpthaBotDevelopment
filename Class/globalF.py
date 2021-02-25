@@ -9,6 +9,7 @@ from tkinter.filedialog import askopenfilename
 import json
 import os, shutil
 import datetime
+from threading import Thread
 
 
 class GLOBAL(): #This will store global information that may need to be accessed from multiple screens
@@ -19,8 +20,8 @@ class GLOBAL(): #This will store global information that may need to be accessed
         self.validation = Validation()
         self.getAppSettings()
 
+        # Global app triggers and dialogs
         self.exit_event = Event()
-
         self.dialog = None  # This wil handle all dialog boxes for the program - its easier to manage
 
     def closeDialog(self, *args):
@@ -56,14 +57,22 @@ class GLOBAL(): #This will store global information that may need to be accessed
 
     def saveAppSettings(self):
         self.jsonSave(self.appSettings,self.directories.appConfigFile)
+
     def clearTemp(self):
         folder = self.directories.temp
-        shutil.rmtree(folder)
-    def compareDate(self,date1,date2):
+        shutil.rmtree(folder)  # this deletes the directory
+        os.mkdir(folder)
+
+    def compareDate(self, date1, date2):
         if date1.strftime("%d:%m:%Y") == date2.strftime("%d:%m:%Y"):
             return True
         else:
             return False
 
+    def threadedSet(self, var, val):
+        def function():
+            var = val
+
+        Thread(target=function, daemon=True).start()
 
 globalFuncs = GLOBAL() #We need the class to be static from start!

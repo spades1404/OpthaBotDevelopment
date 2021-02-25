@@ -15,6 +15,7 @@ class LogInScreen(MDScreen):
         self.name = "LOGIN"
         self.content = Builder.load_string(loginScreenHelper)
         self.add_widget(self.content)
+        self.content.ids.spinner._reset()
 
     def login(self):
 
@@ -35,9 +36,10 @@ class LogInScreen(MDScreen):
         def bypassLogin():  # FOR DEV PURPOSE
             self.parent.current = "PRIMARY"
             self.parent.current_screen.configureMenu(0)
+            self.content.ids.spinner.active = False
 
-        Thread(target=function, daemon=True).start()  # bypasses login for us
-        #Thread(target=function, daemon=True).start()
+        Thread(target=bypassLogin, daemon=True).start()  # bypasses login for us
+        # Thread(target=function, daemon=True).start()
 
     def logInFailed(self):
         self.content.ids.userEntry.error = True
