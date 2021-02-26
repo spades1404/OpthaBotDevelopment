@@ -9,7 +9,11 @@ This project is still in development, and this repo contains the most up to date
 
 However, if youre a baller heres how to install and run the source code.
 
-First, you will need Python, any version above 3.7 should work. *This project was built on 3.8, so if its your first time installing python, use 3.8 as its the most stable.* You can download python [here](https://www.python.org/downloads/) *Make sure during install Python is added to PATH if you are on windows*. 
+First, you will need Python, any version above 3.7 should work. *This project was built on 3.8, so if its your first time installing python, use 3.8 as its the most stable.* You can download python [here](https://www.python.org/downloads/) 
+
+
+*__Note: when installing python or git make sure that they are added to PATH during install, you should see an option for this when installing__*
+
 
 Next, you will need to download the repository to your local machine. Create the folder you want to clone the repo to and open a command prompt *inside* that folder. Run the following command (you may need to install git first, you can find that [here](https://git-scm.com/download/win))- 
 
@@ -42,7 +46,7 @@ Finally, run the program!
 Whenever you want to run the program again all you need to do is run the command to open the venv and then run the file.
 
     kivy_venv\Scripts\activate
-    python main.py
+    python main.pyw
     
 Enjoy!
 
