@@ -1,4 +1,4 @@
-#Database Imports
+# Database Imports
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore as fs
@@ -46,9 +46,8 @@ class Database():  # Defining the firebase class inside the main window class be
 
     ##################################################
 
-
     ##ORGS##
-    def addOrganisation(self,name,mainAdmin,contactNum,contactEmail,postcode,address,city):
+    def addOrganisation(self, name, mainAdmin, contactNum, contactEmail, postcode, address, city):
         name = str(name)
         mainAdmin = str(mainAdmin)
         contactNum = str(contactNum)
@@ -57,19 +56,22 @@ class Database():  # Defining the firebase class inside the main window class be
         address = str(address)
         city = str(city)
 
-        #Verify Contents
-        if Validation().validatePlainString(name,numCheck=True) or Validation().validatePlainString(mainAdmin,numCheck=True)  or Validation().checkEmail(contactEmail) or Validation().checkNumber(contactNum) or Validation().checkPostcode(postcode) or Validation().validatePlainString(address) or Validation().validatePlainString(city,numCheck=True) == False:
+        # Verify Contents
+        if Validation().validatePlainString(name, numCheck=True) or Validation().validatePlainString(mainAdmin,
+                                                                                                     numCheck=True) or Validation().checkEmail(
+            contactEmail) or Validation().checkNumber(contactNum) or Validation().checkPostcode(
+            postcode) or Validation().validatePlainString(address) or Validation().validatePlainString(city,
+                                                                                                       numCheck=True) == False:
             return "Invalid Details Cannot Make Org"
-
 
         org = {
             "name": name,
-            "mainAdmin" : mainAdmin,
-            "contactNum" : contactNum,
-            "contactEmail" : contactEmail,
-            "postcode" : postcode,
-            "address" : address,
-            "city" : city
+            "mainAdmin": mainAdmin,
+            "contactNum": contactNum,
+            "contactEmail": contactEmail,
+            "postcode": postcode,
+            "address": address,
+            "city": city
         }
 
         self.fsdb.collection(u"organisations").add(org)
@@ -79,8 +81,7 @@ class Database():  # Defining the firebase class inside the main window class be
     def returnAllOrgs(self):
         return [i for i in self.fsdb.collection(u"organisations").stream()]
 
-
-    #def editOrganisation(self,dic):
+    # def editOrganisation(self,dic):
     #    if Validation().validatePlainString(dic["name"],numCheck=True) or Validation().validatePlainString(dic["mainAdmin"],numCheck=True)  or Validation().checkEmail(dic["contactEmail"]) or Validation().checkNumber(dic["contactNum"]) or Validation().checkPostcode(dic["postcode"]) or Validation().validatePlainString(["address"]) or Validation().validatePlainString(dic["city"],numCheck=True) == False:
     #        return "Invalid Details Cannot Make Org"
 
@@ -115,15 +116,15 @@ class Database():  # Defining the firebase class inside the main window class be
                                                                                          username).get()
 
         print(db)
-        if Passwords().confirmPassDeprecated(password, db[0].to_dict()["password"]) == True:
-            return db[0]
+        try:
+            if Passwords().confirmPassDeprecated(password, db[0].to_dict()["password"]) == True:
+                return db[0]
+        except:
+            "uh oh is log in broke?"
 
         return None
 
-
-
-
-    def checkForUpdate(self):#this function will check for model updates from the server
+    def checkForUpdate(self):  # this function will check for model updates from the server
         query = self.fsdb.collection(u"models")
         data = [i.to_dict() for i in query.stream()]  # Grabs data and converst all jsons into dictionaries
         x = sorted(data, key=lambda key: key["date"], reverse=True)  # sorts the data by date from latest to earliest
@@ -135,20 +136,18 @@ class Database():  # Defining the firebase class inside the main window class be
             else:
                 return False
 
-
-
-    def generatePlaceholderFile(self,name):
-        with open(name,"w") as file:
+    def generatePlaceholderFile(self, name):
+        with open(name, "w") as file:
             file.close()
 
-    def js_r(self,filename):
+    def js_r(self, filename):
         with open(filename) as f_in:
             return (json.load(f_in))
 
-    def uploadScan(self,scan):
+    def uploadScan(self, scan):
 
         serverLoc = "Images/" + scan.fileName
-        self.saveToFirebaseStorage(scan.postProcessDir,serverLoc)
+        self.saveToFirebaseStorage(scan.postProcessDir, serverLoc)
         scanRes = {
             "condition": scan.result,
             "custID": scan.custID,
@@ -161,6 +160,8 @@ class Database():  # Defining the firebase class inside the main window class be
         result = self.fsdb.collection(u"images").add(scanRes)
         scan.serverID = result[1].id
         scan.uploaded = True
+        scan.dbobj = self.fsdb.collection(u"images").document(scan.serverID).get()
+        scan.details = scan.dbobj.to_dict()
         print(scanRes)
 
         return
@@ -203,16 +204,23 @@ class Database():  # Defining the firebase class inside the main window class be
         else:
             return False
 
-    def searchPX(self,fName = "", lName = "", email = "", id="", postcode= "", phone="",addy="",date=None):
-        #THIS METHOD IS VERY SLOW FOR LARGE RECORDS
+    def searchPX(self, fName="", lName="", email="", id="", postcode="", phone="", addy="", date=None):
+        # THIS METHOD IS VERY SLOW FOR LARGE RECORDS
         collection = self.fsdb.collection(u"patients").where("practice", "==",
                                                              self.practice).get()  # This has all of our patient records
-        scoreList = []  #This will store a list of simmilarity scores for each record
+        scoreList = []  # This will store a list of simmilarity scores for each record
         allRecords = []
-
 
         for i in collection:
             x = i.to_dict()
+            s1 = 0
+            s2 = 0
+            s3 = 0
+            s4 = 0
+            s5 = 0
+            s6 = 0
+            s7 = 0
+            s8 = 0
             if fName.replace(" ", "") != "":
                 s1 = (self.similar(fName, x["fName"])) / 7
             if lName.replace(" ", "") != "":
@@ -230,16 +238,14 @@ class Database():  # Defining the firebase class inside the main window class be
 
             try:
                 y = x["dob"]
-                if y == date:
+                if y == date and date.replace(" ", "") != "":
                     s8 = 1
                 else:
                     s8 = 0
             except Exception as e:
                 s8 = 0
 
-
-            total = s1+s2+s3+s4+s5+s6+s7+s8
-
+            total = s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8
 
             allRecords.append(i)
 
@@ -248,20 +254,20 @@ class Database():  # Defining the firebase class inside the main window class be
         #
         multidlist = []
         for i in range(len(allRecords)):
-            multidlist.append([allRecords[i],scoreList[i]])
+            multidlist.append([allRecords[i], scoreList[i]])
 
         multidlist = sorted(multidlist, key=lambda x: x[1], reverse=True)
 
         allRecords = [Patient(i[0]) for i in multidlist if i[1] > 0.05]
 
-
         return allRecords[:10]
 
-    def updateScanPXLink(self,sourceID,linkID):
+    def updateScanPXLink(self, sourceID, linkID):
+        print(linkID)
         record = self.fsdb.collection(u"images").document(sourceID)
-        record.update({"custID":linkID})
+        record.update({"custID": linkID})
 
-    def updateDiagnosis(self,sourceID,cond):
+    def updateDiagnosis(self, sourceID, cond):
         record = self.fsdb.collection(u"images").document(sourceID)
         record.update({"diagnosis": cond})
 
@@ -313,6 +319,6 @@ class Database():  # Defining the firebase class inside the main window class be
     def returnUsers(self):
         return self.fsdb.collection(u"users").where("practice", "==", self.practice).get()
 
+
 if __name__ == "__main__":
     db = Database()
-

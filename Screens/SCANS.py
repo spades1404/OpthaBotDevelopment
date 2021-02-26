@@ -17,8 +17,7 @@ class ScanListViewScreen(MDScreen):
 
         self.content = Builder.load_string(viewScansHelper)
         self.viewScanScreen = ViewScanScreen()
-        self.viewScanScreen.content.ids.back.on_release = partial(self.switchScreen,"listview")
-
+        self.viewScanScreen.content.ids.back.on_release = partial(self.switchScreen, "listview")
 
         self.sm.add_widget(self.content)
         self.sm.add_widget(self.viewScanScreen)
@@ -26,9 +25,10 @@ class ScanListViewScreen(MDScreen):
         self.currentListItems = []
         self.loadScans()
 
-    def switchScreen(self,name):
-        self.sm.current = name
+        self.on_pre_enter = self.loadScans
 
+    def switchScreen(self, name):
+        self.sm.current = name
 
     def loadScans(self):
         filter = 1

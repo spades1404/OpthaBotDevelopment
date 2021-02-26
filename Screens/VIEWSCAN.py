@@ -5,7 +5,9 @@ from kivy.lang import Builder
 from Screens.HELPERS import viewScanHelper
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.clock import Clock
+from functools import partial
 
+from Class.scan import Scan
 
 class ViewScanScreen(MDScreen):
     def __init__(self):
@@ -13,13 +15,23 @@ class ViewScanScreen(MDScreen):
         self.name = "VIEWSCAN"
         self.content = Builder.load_string(viewScanHelper)
         self.add_widget(self.content)
+        self.scan = Scan()
 
-        Clock.schedule_once(self.initDropDown)
+        # Clock.schedule_once(self.initDropDown)
 
+        self.on_pre_enter = self.configure
 
         return
 
-    def initDropDown(self,interval):
+    def configure(self):
+        self.content.ids.updateButt.on_release = self.updateDetail
+        self.content.ids.deleteButt.on_release = self.deleteScan
+
+    def updateDetail(self):
+        print(0)
+        self.scan.updateDetails(self.content.ids.orgid.text, self.content.ids.field.text)
+
+    def initDropDown(self, interval):
         menuItems = [
             {"text": "Normal"},
             {"text": "Diabetic Retinopathy"},
@@ -38,31 +50,36 @@ class ViewScanScreen(MDScreen):
         )
         self.menu.bind(on_release=self.set_item)
 
-    def insertScan(self,scan):
+    def insertScan(self, scan, *args):
+        self.scan = scan
+
         self.content.ids.results.text = scan.generateDescription()
-        self.content.ids.orgid.text = scan.custID
+        self.content.ids.orgid.text = scan.details["custID"]
+        self.content.ids.field.text = scan.details["diagnosis"]
         self.content.ids.image.source = scan.postProcessDir
-        self.content.ids.updateButt.on_release = lambda:scan.updateDetails(self.content.ids.orgid.text,self.content.ids.field.text)
-        self.content.ids.deleteButt.on_release = lambda:self.deleteScan(scan)
         return
 
-    def deleteScan(self,scan):
+    def deleteScan(self, *args):
+        scan = self.scan
         scan.dbobj.reference.delete()
         self.content.ids.field.text = "DELETED"
         self.content.ids.orgid.text = "DELETED"
+        scan.custID = "DELETED"
         self.content.ids.updateButt.on_release = self.dud
         self.content.ids.deleteButt.on_release = self.dud
+
         print("done")
 
 
     def insertScanLoadImage(self,scan):
+        self.scan = scan
         self.content.ids.results.text = scan.generateDescription()
-        self.content.ids.orgid.text = scan.custID
+        self.content.ids.orgid.text = scan.details["custID"]
+        self.content.ids.field.text = scan.details["diagnosis"]
         scan.grabImage()
         self.content.ids.image.source = scan.postProcessDir
-        self.content.ids.updateButt.on_release = lambda: scan.updateDetails(self.content.ids.orgid.text)
-        self.content.ids.deleteButt.on_release = lambda: self.deleteScan(scan)
 
+        print(scan.details)
 
     def set_item(self, instance_menu, instance_menu_item):
         def set_item(interval):
@@ -73,4 +90,4 @@ class ViewScanScreen(MDScreen):
         Clock.schedule_once(set_item, 0.5)
 
     def dud(self):
-        print(":(")
+        print("Ah mate hate to be brisk with ya but that aint gonna work the second time around")

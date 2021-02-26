@@ -701,12 +701,9 @@ Screen:
             MDTextField:
                 id: field
                 hint_text: "Diagnosis"
-                on_focus: if self.focus: app.primaryScreen.viewSingleScanScreen.menu.open()
-                text:
             MDTextField:
                 id: orgid
                 hint_text: "Patient ID"
-                text:
             
             MDFlatButton:
                 id: updateButt

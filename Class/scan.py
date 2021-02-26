@@ -13,7 +13,8 @@ class Scan():
         self.scanTime = datetime.now()
         self.originalImage = Image.open(fileLoc)
         self.postProcessImage = self.preProcessImage(self.location)
-        self.fileName = r"{}.jpg".format(''.join(random.choices(string.ascii_uppercase + string.digits, k=15)))
+        self.fileName = r"{}{}.jpg".format(globalFuncs.directories.temp,
+                                           ''.join(random.choices(string.ascii_uppercase + string.digits, k=15)))
         self.postProcessImage.save(self.fileName)
         self.custID = ""
         self.serverID = None
@@ -44,17 +45,19 @@ class Scan():
         self.imageDir = globalFuncs.directories.temp + (self.details["location"].split("/")[1])
         globalFuncs.database.downloadFromFirebaseStorage(self.details["location"], self.imageDir)
         self.postProcessDir = self.imageDir
+        print(self.imageDir)
 
-    def updateDetails(self,custid,condition): #will only update the customer id or the real condition
-        if custid.replace(" ", "") != "" or custid.replace(" ", "") != None:
-            globalFuncs.database.updateScanPXLink(self.serverID,custid)
+    def updateDetails(self, custid, condition, *args):  # will only update the customer id or the real condition
+        if custid.replace(" ", "") != "":
+            globalFuncs.database.updateScanPXLink(self.serverID, custid)
+            self.custID = custid
 
-        if condition.replace(" ", "") != "" or condition.replace(" ", "") != None:
-            globalFuncs.database.updateDiagnosis(self.serverID,condition)
+        if condition.replace(" ", "") != "":
+            globalFuncs.database.updateDiagnosis(self.serverID, condition)
 
-    def preProcessImage(self,loc):
+    def preProcessImage(self, loc):
         image = cropImageByColorDetection(loc)  # Crops the image to the required content
-        image = resizeImage(image,dim=256)
+        image = resizeImage(image, dim=256)
         return image
 
     def analyze(self): #this func takes a while

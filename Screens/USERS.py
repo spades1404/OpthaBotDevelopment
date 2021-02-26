@@ -29,7 +29,8 @@ class ViewUsersScreen(MDScreen):
 
         self.add_widget(self.sm)
 
-        self.grabUser()
+        self.on_pre_enter = self.grabUser
+        self.on_pre_leave = self.eraseList
 
     def grabUser(self):
         [self.viewAllScreen.ids.listview.add_widget(
@@ -38,6 +39,9 @@ class ViewUsersScreen(MDScreen):
                 on_release=partial(self.viewUser, i)
             )
         ) for i in globalFuncs.database.returnUsers()]
+
+    def eraseList(self):  # cba to do this now
+        return
 
     def setAccessLevel(self, name):
         self.ref = name
@@ -80,7 +84,8 @@ class ViewUsersScreen(MDScreen):
             "email": self.addUserScreen.ids.emailEntry.text,
             "username": self.addUserScreen.ids.usernameEntry.text,
             "password": self.addUserScreen.ids.passwordEntry.text,
-            "accessLevel": self.val
+            "accessLevel": self.val,
+            "practice": globalFuncs.permaSet["practice"]
         }
 
         for key in data:
@@ -103,7 +108,8 @@ class ViewUsersScreen(MDScreen):
             "email": self.viewUserScreen.ids.emailEntry.text,
             "username": self.viewUserScreen.ids.usernameEntry.text,
             "password": self.viewUserScreen.ids.passwordEntry.text,
-            "accessLevel": self.val
+            "accessLevel": self.val,
+            "practice": globalFuncs.permaSet["practice"]
         }
 
         globalFuncs.database.fsdb.collection(u"users").document(self.user.id).update(data)

@@ -38,7 +38,7 @@ class LogInScreen(MDScreen):
             self.parent.current_screen.configureMenu(0)
             self.content.ids.spinner.active = False
 
-        Thread(target=bypassLogin, daemon=True).start()  # bypasses login for us
+        Thread(target=function, daemon=True).start()  # bypasses login for us
         # Thread(target=function, daemon=True).start()
 
     def logInFailed(self):

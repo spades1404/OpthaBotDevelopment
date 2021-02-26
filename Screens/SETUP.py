@@ -45,7 +45,7 @@ class SetupScreen(MDScreen):
         globalFuncs.permaSet["org"] = self.practice.to_dict()["organisation"]
         globalFuncs.permaSet["practice"] = self.practice.id
         globalFuncs.permaSet["firstBoot"] = False
-        globalFuncs.jsonSave(self.permaSet, self.directories.appPermaSets)
+        globalFuncs.jsonSave(globalFuncs.permaSet, globalFuncs.directories.appPermaSets)
 
         globalFuncs.closeDialog()
 

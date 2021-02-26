@@ -22,7 +22,7 @@ class OpthaBotApp(MDApp):
         self.theme_cls.secondary_palette = "Purple"
         # self.theme_cls.theme_style = "Dark"
         self.icon = globalFuncs.directories.icon
-        #Window.maximize()
+        Window.maximize()
 
         # Screen stuff
         self.screenManager = ScreenManager()
