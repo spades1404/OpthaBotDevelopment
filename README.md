@@ -11,7 +11,7 @@ However, if youre a baller heres how to install and run the source code.
 
 First, you will need Python, any version above 3.7 should work. *This project was built on 3.8, so if its your first time installing python, use 3.8 as its the most stable.* You can download python [here](https://www.python.org/downloads/). 
 
-Next, you will need to download the repository to your local machine. Create the folder you want to clone the repo to and open a command prompt *inside* that folder. Run the following command (you may need to install git first, you can find that [here](https://git-scm.com/download/win)- 
+Next, you will need to download the repository to your local machine. Create the folder you want to clone the repo to and open a command prompt *inside* that folder. Run the following command (you may need to install git first, you can find that [here](https://git-scm.com/download/win))- 
 
     git clone https://github.com/spades1404/OpthaBotDevelopment opthabot
     
