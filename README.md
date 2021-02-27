@@ -9,9 +9,17 @@ This project is still in development, and this repo contains the most up to date
 
 However, if youre a baller heres how to install and run the source code.
 
-First, you will need Python, any version above 3.7 should work. You can download python [here](https://www.python.org/downloads/). 
+First, you will need Python, any version above 3.7 should work.
+>__*We recommend using the latest version of Python 3.8 as its the most stable for this program*__ 
 
-Next, you will need to download the repository to your local machine. Create the folder you want to clone the repo to and open a command prompt. Run the following command - 
+You can download Python [here](https://www.python.org/downloads/) 
+
+You may also need to install Git if you've not previously done so, that can be found [here](https://git-scm.com/download/win)
+
+> *__Note: when installing Python or Git make sure that they are added to PATH during install, you should see an option for this when installing__*
+
+
+Next, you will need to download the repository to your local machine. Create the folder you want to clone the repo to and open a command prompt *inside* that folder. Run the following command- 
 
     git clone https://github.com/spades1404/OpthaBotDevelopment opthabot
     
@@ -32,17 +40,16 @@ Now we just need to install all the python dependencies that are needed:
 
     pip install kivy_deps.glew kivy_deps.sdl2 kivy_deps.gstreamer kivy kivy_examples --pre
     pip install -r requirements.txt
-    pip install kivymd
     
 Finally, run the program!
 
-    python main.py
+    python main.pyw
     
 
 Whenever you want to run the program again all you need to do is run the command to open the venv and then run the file.
 
     kivy_venv\Scripts\activate
-    python main.py
+    python main.pyw
     
 Enjoy!
 
