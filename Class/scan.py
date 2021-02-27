@@ -67,7 +67,7 @@ class Scan():
         self.generateMultiDiListofResults()#
 
     def generateTemp(self):
-        self.postProcessDir = globalFuncs.directories.temp + self.fileName
+        self.postProcessDir = self.fileName
         self.postProcessImage.save(fp=self.postProcessDir)
         return self.postProcessDir
 
