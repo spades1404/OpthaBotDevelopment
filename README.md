@@ -5,7 +5,7 @@ __OpthaBot__ is a tool that will help Optomometrists make diagnoses faster. It w
 
 ## Installation Instructions
 
-This project is still in development, and this repo contains the most up to date code. If you would like a single executable, wait for the official OpthaBot release repository.
+This project is still in development, and this repo contains the most up to date code. If you would like a single executable, wait for the official OpthaBot release repository. As of 28/02/21 you can now download a the latest release version of OpthaBot from [here](https://drive.google.com/file/d/1MEfIRiECeZk5osR9JVXSc57sRxra4Uaj/view)
 
 First, you will need Python, any version above 3.7 should work.
 >__*We recommend using the latest version of Python 3.8 as its the most stable for this program*__ 
@@ -30,8 +30,6 @@ Go into the new opthabot folder and run the __install.bat__ script. Thats it. :k
 Whenever you want to run the program after you can just use __run.bat__
 
 Now that you've got the program running (hopefully) open the example folder so you have a full walkthrough of what to do.
-
-(I promise there will be an exe soon!)  :smiling_face_with_three_hearts:
 
 ### Manual Install
     
@@ -67,4 +65,4 @@ Enjoy!
 
 Now that you've got the program running (hopefully) open the example folder so you have a full walkthrough of what to do.
 
-(I promise there will be an exe soon!)  :smiling_face_with_three_hearts:
+
