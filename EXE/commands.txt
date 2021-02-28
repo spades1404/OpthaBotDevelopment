@@ -1,4 +1,4 @@
 kivy_venv\Scripts\activate
-python -m PyInstaller --name --hidden-import=pkg_resources OpthaBot C:\Users\rajib\Documents\GitHub\OpthaBotDevelopment\main.py
+python -m PyInstaller --name OpthaBot C:\Users\rajib\Documents\GitHub\OpthaBotDevelopment\main.py
 python -m PyInstaller --name OpthaBot OpthaBot.spec --hidden-import=pkg_resources
-
+python -m PyInstaller --onefile --name OpthaBot C:\Users\rajib\Documents\GitHub\OpthaBotDevelopment\main.py
