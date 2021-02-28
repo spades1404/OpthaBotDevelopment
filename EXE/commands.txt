@@ -1,0 +1,1 @@
+python -m PyInstaller --name OpthaBot C:\Users\rajib\Documents\GitHub\OpthaBotDevelopment\main.py
