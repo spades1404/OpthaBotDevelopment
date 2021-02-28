@@ -25,9 +25,9 @@ So you can take two routes now, an automatic install or the manual one.
 
 ### Automatic Install
 
-Go into the new opthabot folder and run the install.bat script. Thats it. :kissing_closed_eyes:
+Go into the new opthabot folder and run the __install.bat__ script. Thats it. :kissing_closed_eyes:
 
-Whenever you want to run the program after you can just use run.bat 
+Whenever you want to run the program after you can just use __run.bat__
 
 ### Manual Install
     
