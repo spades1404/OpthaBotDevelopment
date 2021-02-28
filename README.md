@@ -1,13 +1,11 @@
 # OpthaBot Development Repository
 
-### What is OpthaBot?
+## What is OpthaBot?
 __OpthaBot__ is a tool that will help Optomometrists make diagnoses faster. It will utlises machine learning algorithms to make predictions based on fundus imagery. Alongside the ability to take in fundus scans and analyze them, OpthaBot also provides databasing options to manage patients, scans, diagnoses and users. 
 
-### Installation Instructions
+## Installation Instructions
 
 This project is still in development, and this repo contains the most up to date code. If you would like a single executable, wait for the official OpthaBot release repository.
-
-However, if youre a baller heres how to install and run the source code.
 
 First, you will need Python, any version above 3.7 should work.
 >__*We recommend using the latest version of Python 3.8 as its the most stable for this program*__ 
@@ -22,6 +20,16 @@ You may also need to install Git if you've not previously done so, that can be f
 Next, you will need to download the repository to your local machine. Create the folder you want to clone the repo to and open a command prompt *inside* that folder. Run the following command- 
 
     git clone https://github.com/spades1404/OpthaBotDevelopment opthabot
+    
+So you can take two routes now, an automatic install or the manual one. 
+
+### Automatic Install
+
+Go into the new opthabot folder and run the install.bat script. Thats it. :kissing_closed_eyes:
+
+Whenever you want to run the program after you can just use run.bat 
+
+### Manual Install
     
 Now we need to get to the root directory:
 
