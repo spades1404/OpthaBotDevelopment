@@ -12,11 +12,11 @@ import random
 # we are importing these classes seperately and not through the global funcs because globalfuncs depends on having access to the database class which causes a ciruclar import
 from Class.validation import Validation
 from Class.directories import Directories
-from Class.hashing import Passwords
 from Class.user import Patient
 
 import pytz
 import os
+from Class.password import Password
 
 
 class Database():  # Defining the firebase class inside the main window class because of PyQt class handling oddities
@@ -31,6 +31,7 @@ class Database():  # Defining the firebase class inside the main window class be
 
         self.fsdb = fs.client()  # Object for accessing the firebase - where descriptive data is
 
+        self.password = Password()
         self.initPracticeCode()
 
     def initPracticeCode(self):
@@ -101,7 +102,7 @@ class Database():  # Defining the firebase class inside the main window class be
             "fName": fname,
             "lName": lname,
             "username": user,
-            "password": passw,
+            "password": self.password.genHash(passw),
             "practice": id
         })[1]
 
@@ -117,7 +118,7 @@ class Database():  # Defining the firebase class inside the main window class be
 
         print(db)
         try:
-            if Passwords().confirmPassDeprecated(password, db[0].to_dict()["password"]) == True:
+            if self.password.checkHash(password, db[0].to_dict()["password"]) == True:
                 return db[0]
         except:
             "uh oh is log in broke?"

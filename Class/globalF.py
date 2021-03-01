@@ -2,13 +2,13 @@ import time
 from Class.directories import Directories
 from Database.firebase import Database
 from Class.validation import Validation
+from Class.password import Password
 global globalFuncs
 from threading import Event
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 import json
 import os, shutil
-import datetime
 from threading import Thread
 
 
@@ -18,6 +18,7 @@ class GLOBAL(): #This will store global information that may need to be accessed
         self.directories = Directories()
         self.currentUser = None
         self.validation = Validation()
+        self.password = Password()
         self.getAppSettings()
 
         # Global app triggers and dialogs

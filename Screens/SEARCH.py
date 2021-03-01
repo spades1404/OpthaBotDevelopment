@@ -9,7 +9,7 @@ from kivymd.uix.dialog import MDDialog
 
 
 from Screens.HELPERS import searchScreenHelper
-from Screens.ADDUSER import AddUserScreen
+from Screens.ADDPX import AddPXScreen
 from Screens.VIEWPX import ViewPXScreen
 from Class.globalF import globalFuncs
 from Class.user import Patient
@@ -25,9 +25,8 @@ class SearchScreen(MDScreen):
 
         self.screenManager = ScreenManager()
 
-
         self.mainContent = Builder.load_string(searchScreenHelper)
-        self.addUserScreen = AddUserScreen()
+        self.addUserScreen = AddPXScreen()
         self.viewPXScreen = ViewPXScreen()
         self.viewScanScreen = ViewScanScreen()
         self.viewScanScreen.content.ids.back.on_release = partial(self.switchScreen,"viewuser")

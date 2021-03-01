@@ -32,6 +32,8 @@ class ViewUsersScreen(MDScreen):
         self.on_pre_enter = self.grabUser
         self.on_pre_leave = self.eraseList
 
+        self.val = 2
+
     def grabUser(self):
         [self.viewAllScreen.ids.listview.add_widget(
             OneLineListItem(
@@ -77,7 +79,6 @@ class ViewUsersScreen(MDScreen):
 
     def addUser(self):
         self.addUserScreen.ids.spinner.active = True
-        self.val = 2
         data = {
             "fName": self.addUserScreen.ids.fnameEntry.text,
             "lName": self.addUserScreen.ids.lnameEntry.text,
@@ -97,7 +98,9 @@ class ViewUsersScreen(MDScreen):
                 globalFuncs.dialog.open()
                 self.addUserScreen.ids.spinner.active = False
                 return
-        globalFuncs.database.fsdb.collection(u"users").add(data)
+        result = globalFuncs.database.fsdb.collection(u"users").add(data)
+
+        # print(globalFuncs.password.checkHash(pw,globalFuncs.database.fsdb.collection(u"users").document(result[1].id).get().to_dict()["password"]))
         self.addUserScreen.ids.spinner.active = False
         return
 

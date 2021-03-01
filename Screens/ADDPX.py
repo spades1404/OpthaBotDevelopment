@@ -11,14 +11,14 @@ from Class.globalF import globalFuncs
 from threading import Thread
 from functools import partial
 
-class AddUserScreen(MDScreen):
+class AddPXScreen(MDScreen):
     def __init__(self):
-        super(AddUserScreen, self).__init__()
+        super(AddPXScreen, self).__init__()
         self.content = Builder.load_string(addPXHelper)
         self.add_widget(self.content)
         self.name = "adduser"
 
-    def addUser(self):
+    def addPX(self):
         def function():
             self.content.ids.spinner.active = True
 

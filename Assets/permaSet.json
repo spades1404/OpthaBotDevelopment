@@ -1,6 +1,6 @@
 {
   "devMode": "False",
-  "firstBoot": true,
+  "firstBoot": false,
   "org": "zPHE83liYXWAhoCLHe3m",
   "practice": "AgUyX5fPk2kMIB118NUA",
   "facade": true

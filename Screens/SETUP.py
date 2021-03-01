@@ -1,7 +1,6 @@
 from kivymd.uix.screen import MDScreen
 from kivy.uix.screenmanager import ScreenManager
 from kivymd.uix.dialog import MDDialog
-from Class.globalF import globalFuncs
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivy.lang.builder import Builder
 from functools import partial
@@ -248,13 +247,25 @@ class SetupScreen(MDScreen):
                 globalFuncs.dialog.open()
 
                 self.setupAdmin.ids.spinner.active = False
-
-                # saving all the info
-                globalFuncs.permaSet["org"] = self.org.id
-                globalFuncs.permaSet["practice"] = self.practice.id
-                globalFuncs.permaSet["firstBoot"] = False
-                globalFuncs.jsonSave(globalFuncs.permaSet, globalFuncs.directories.appPermaSets)
                 return
+
+            if globalFuncs.password.checkPasswordIsValid(passw) == False:
+                globalFuncs.dialog = MDDialog(
+                    title="Error",
+                    text="The password entered is not valid, the password must be at least 8 characters long, and contains numbers,uppercase and lowercase letters.",
+                    buttons=[MDFlatButton(text="Ok", on_release=globalFuncs.closeDialog)],
+                    auto_dismiss=False
+                )
+                globalFuncs.dialog.open()
+
+                self.setupAdmin.ids.spinner.active = False
+                return
+
+            # saving all the info
+            globalFuncs.permaSet["org"] = self.org.id
+            globalFuncs.permaSet["practice"] = self.practice.id
+            globalFuncs.permaSet["firstBoot"] = False
+            globalFuncs.jsonSave(globalFuncs.permaSet, globalFuncs.directories.appPermaSets)
             result = globalFuncs.database.createUser(fname, lname, email, user, passw, 1, self.practice.id)
             self.setupAdmin.ids.spinner.active = False
             self.parent.current = "LOGIN"
