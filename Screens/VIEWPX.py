@@ -37,7 +37,7 @@ class ViewPXScreen(MDScreen):
         # remove previous scans
         [self.content.ids.listview.remove_widget(i) for i in self.listContent]
 
-        scans = [Scan().initialiseFromDB(i) for i in globalFuncs.database.returnScansFromUser(user.orgID)]
+        scans = [Scan().initialiseFromDB(i) for i in globalFuncs.database.returnScansFromPX(user.orgID)]
         self.listContent = []
         for i in scans:
             card = ScanCard(i)
@@ -76,7 +76,7 @@ class ViewPXScreen(MDScreen):
         return
 
     def autoGenID(self):
-        self.content.ids.orgIDEntry.ids.numEntry.text = globalFuncs.database.generateNewIDFromDB("orgID", u"patients")
+        self.content.ids.orgIDEntry.ids.numEntry.text = globalFuncs.database.generateNewFieldNonRepeat("orgID", u"patients")
 
     def selectCalendar(self):
         date_dialog = MDDatePicker(callback=self.setDate)

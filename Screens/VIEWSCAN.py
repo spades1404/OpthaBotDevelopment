@@ -78,16 +78,15 @@ class ViewScanScreen(MDScreen):
         self.content.ids.field.text = scan.details["diagnosis"]
         scan.grabImage()
         self.content.ids.image.source = scan.imageDirectory
-
         print(scan.details)
 
     def set_item(self, instance_menu, instance_menu_item):
         def set_item(interval):
             self.content.ids.field.text = instance_menu_item.text
             instance_menu.dismiss()
-            print(instance_menu_item.text)
             self.content.ids.field.text = instance_menu_item.text
         Clock.schedule_once(set_item, 0.5)
 
     def dud(self):
-        print("Ah mate hate to be brisk with ya but that aint gonna work the second time around")
+        print("Cant delete things twice ;)"
+        )

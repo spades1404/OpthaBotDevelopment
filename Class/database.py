@@ -23,25 +23,20 @@ class Database():  # Defining the firebase class inside the main window class be
         Thread(target=self.lateInit,daemon=True).start()
         return
     def lateInit(self):
-        time.sleep(1)
+        time.sleep(0.1)
         from Class.globalF import globalFuncs #importing this separately because it a circular import
 
         pyrebasekey = globalFuncs.config._sections["pyrebase"]
         firebaseadminkey = globalFuncs.config._sections["firebaseadmin"]
         dropboxkey = globalFuncs.config._sections["dropbox"]
 
-        print(pyrebasekey)
+        firebase_admin.initialize_app(credentials.Certificate(firebaseadminkey))  #Sets up firebase_admin with the token credentials
 
-        firebase_admin.initialize_app(credentials.Certificate(firebaseadminkey))  # Configures our lib with our db access key
-        self.pbs = pyrebase.initialize_app(pyrebasekey)  # Pyrebase connection for accessing our storage
-        self.storage = self.pbs.storage()  # This is our object for the storage database
+        self.storage = pyrebase.initialize_app(pyrebasekey).storage()  # Setting up Pyrebase so we can access the firestore
         self.fsdb = fs.client()  # Object for accessing the firebase - where descriptive data is
         self.dropbox = dropbox.Dropbox(dropboxkey["accessToken"])
 
-        #These make it easier to access object items from code
-        self.practice = globalFuncs.appInfo["practice"]
-        self.dirs = globalFuncs.directories
-        self.password = globalFuncs.password
+        #Setting the globalFuncs object as an attribute so it can be accessed outside this init
         self.gf = globalFuncs
 
     #############FIREBASE STORAGE################ #SMALL FILES
@@ -60,7 +55,42 @@ class Database():  # Defining the firebase class inside the main window class be
             metadata,res = self.dropbox.files_download(path = databasePath)
             f.write((res.content))
 
+    ###Generic database functions
 
+    def returnCollectionContents(self, collectionDir):
+        query = self.fsdb.collection(collectionDir)
+        for doc in query.stream():
+            print(doc)
+            print("{} => {}".format(doc.id, doc.to_dict()))
+
+    def mto(self,field,collection,query):
+        if len(self.fsdb.collection(collection).where(field,"==",query).get()) > 1:
+            return True
+        else:
+            return False
+
+    def generateNewFieldNonRepeat(self, field, collection):
+        try:
+            ids = [i.to_dict()[field] for i in self.fsdb.collection(collection).stream()]
+            x = ids[0]  # if the collection is empty its safe to return any new string
+        except:
+            x = ''.join(random.choice(string.ascii_uppercase) for i in range(6))
+            return x
+
+        while x in ids:
+            x = ''.join(random.choice(string.ascii_uppercase) for i in range(6))
+
+        return x
+
+    def similar(self, a, b):
+        return SequenceMatcher(None, a, b).ratio()
+
+    def compareDate(self, date1, date2):
+
+        if date1.strftime("%d:%m:%Y") == date2.strftime("%d:%m:%Y"):
+            return True
+        else:
+            return False
 
     #org stuff - not implemented##
     def addOrganisation(self, name, mainAdmin, contactNum, contactEmail, postcode, address, city):
@@ -96,23 +126,37 @@ class Database():  # Defining the firebase class inside the main window class be
     def returnAllOrgs(self):
         return [i for i in self.fsdb.collection(u"organisations").stream()]
 
-    # def editOrganisation(self,dic):
-    #    if Validation().validatePlainString(dic["name"],numCheck=True) or Validation().validatePlainString(dic["mainAdmin"],numCheck=True)  or Validation().checkEmail(dic["contactEmail"]) or Validation().checkNumber(dic["contactNum"]) or Validation().checkPostcode(dic["postcode"]) or Validation().validatePlainString(["address"]) or Validation().validatePlainString(dic["city"],numCheck=True) == False:
-    #        return "Invalid Details Cannot Make Org"
+    def returnOrgByLink(self, code):
+        return self.fsdb.collection(u"organisations").where("linkCode", "==", code).get()
 
-    def returnCollectionContents(self, collectionDir):
-        query = self.fsdb.collection(collectionDir)
-        for doc in query.stream():
-            print(doc)
-            print("{} => {}".format(doc.id, doc.to_dict()))
 
-    def makeUserAdmin(self, tag):
-        return
-    def mto(self,field,collection,query):
-        if len(self.fsdb.collection(collection).where(field,"==",query).get()) > 1:
-            return True
-        else:
-            return False
+    ####Practice
+
+    def returnPracticeByLink(self, code):
+        return self.fsdb.collection(u"practices").where("linkCode", "==", code).get()
+
+    def addNewPractice(self, name, admin, email, phone, addr, post, org):
+        data = {
+            "name": name,
+            "adminName": admin,
+            "contactEmail": email,
+            "contactNum": phone,
+            "address": addr,
+            "postcode": post,
+            "organisation": org,
+            "linkCode": self.generateNewFieldNonRepeat("linkCode", u"practices")
+        }
+        x = self.fsdb.collection(u"practices").add(data)[1]
+        return x
+
+
+
+
+    #####User records
+
+    def returnUsers(self):
+        return self.fsdb.collection(u"users").where("practice", "==", self.gf.appInfo["practice"]).get()
+
     def createUser(self, fname, lname, email, user, passw, access, id):
         return self.fsdb.collection(u"users").add({
             "accessLevel": access,
@@ -131,59 +175,20 @@ class Database():  # Defining the firebase class inside the main window class be
                 return doc.to_dict()
 
     def signIn(self, username, password):
-        db = self.fsdb.collection(u"users").where("practice", "==", self.practice).where("username", "==",
+        db = self.fsdb.collection(u"users").where("practice", "==", self.gf.appInfo["practice"]).where("username", "==",
                                                                                          username).get()
 
         print(db)
         try:
-            if self.password.checkHash(password, db[0].to_dict()["password"]) == True:
+            if self.gf.checkHash(password, db[0].to_dict()["password"]) == True:
                 return db[0]
         except:
             "uh oh is log in broke?"
 
         return None
 
-    def checkForUpdate(self):  # this function will check for model updates from the server
-        query = self.fsdb.collection(u"models")
-        data = [i.to_dict() for i in query.stream()]  # Grabs data and converst all jsons into dictionaries
-        x = sorted(data, key=lambda key: key["date"], reverse=True)  # sorts the data by date from latest to earliest
-        newestModel = x[0]
 
-        with open(self.dirs.currMod, "r") as file:
-            if newestModel.id == file.read():
-                return newestModel
-            else:
-                return False
-
-    def generatePlaceholderFile(self, name):
-        with open(name, "w") as file:
-            file.close()
-
-    def js_r(self, filename):
-        with open(filename) as f_in:
-            return (json.load(f_in))
-
-    def uploadScan(self, scan):
-
-        serverLoc = "Images/" + scan.fileName
-        self.saveToFirebaseStorage(scan.imageDirectory, serverLoc)
-        scanRes = {
-            "condition": scan.result,
-            "custID": scan.custID,
-            "location": serverLoc,
-            "time": scan.scanTime,
-            "diagnosis": "",
-            "practice": self.practice
-        }
-
-        result = self.fsdb.collection(u"images").add(scanRes)
-        scan.serverID = result[1].id
-        print()
-        scan.dbobj = self.fsdb.collection(u"images").document(scan.serverID).get()
-        scan.details = scan.dbobj.to_dict()
-        print(scanRes)
-
-        return
+    #####Patients
 
     def addNewPX(self, fname, lname, email, id, postcode, phone, addy, date):
         dict = {
@@ -195,38 +200,14 @@ class Database():  # Defining the firebase class inside the main window class be
             "phoneNumber": phone,
             "addressLine": addy,
             "dob": date,
-            "practice": self.practice
+            "practice": self.gf.appInfo["practice"]
         }
 
         return self.fsdb.collection(u"patients").add(dict)[1].id
 
-    def similar(self, a, b):
-        return SequenceMatcher(None, a, b).ratio()
-
-    def generateNewIDFromDB(self, field, collection):
-        try:
-            ids = [i.to_dict()[field] for i in self.fsdb.collection(collection).stream()]
-            x = ids[0]  # if the collection is empty its safe to return any new string
-        except:
-            x = ''.join(random.choice(string.ascii_uppercase) for i in range(6))
-            return x
-
-        while x in ids:
-            x = ''.join(random.choice(string.ascii_uppercase) for i in range(6))
-
-        return x
-
-    def compareDate(self, date1, date2):
-
-        if date1.strftime("%d:%m:%Y") == date2.strftime("%d:%m:%Y"):
-            return True
-        else:
-            return False
-
     def searchPX(self, fName="", lName="", email="", id="", postcode="", phone="", addy="", date=None,m=None):
         # THIS METHOD IS VERY SLOW FOR LARGE RECORDS
-        collection = self.fsdb.collection(u"patients").where("practice", "==",
-                                                             self.practice).get()  # This has all of our patient records
+        collection = self.fsdb.collection(u"patients").where("practice", "==",self.gf.appInfo["practice"]).get()  # This has all of our patient records
         scoreList = []  # This will store a list of simmilarity scores for each record
         allRecords = []
 
@@ -289,13 +270,40 @@ class Database():  # Defining the firebase class inside the main window class be
         record = self.fsdb.collection(u"images").document(sourceID)
         record.update({"custID": linkID})
 
+    def returnScansFromPX(self, id):
+        return self.fsdb.collection(u"images").where("custID", "==", id).get()
+
+
+    #####Scans
+    def uploadScan(self, scan):
+
+        serverLoc = "Images/" + scan.fileName
+        self.saveToFirebaseStorage(scan.imageDirectory, serverLoc)
+        scanRes = {
+            "condition": scan.result,
+            "custID": scan.custID,
+            "location": serverLoc,
+            "time": scan.scanTime,
+            "diagnosis": "",
+            "practice": self.gf.appInfo["practice"]
+        }
+
+        result = self.fsdb.collection(u"images").add(scanRes)
+        scan.serverID = result[1].id
+        print()
+        scan.dbobj = self.fsdb.collection(u"images").document(scan.serverID).get()
+        scan.details = scan.dbobj.to_dict()
+        print(scanRes)
+
+        return
+
     def updateDiagnosis(self, sourceID, cond):
         record = self.fsdb.collection(u"images").document(sourceID)
         record.update({"diagnosis": cond})
 
     def returnRecentScans(self, filter):  # filter =1 for past day =2 for past week =3 for past month
         try:
-            result = self.fsdb.collection(u"images").where("practice", "==", self.practice).get()
+            result = self.fsdb.collection(u"images").where("practice", "==", self.gf.appInfo["practice"]).get()
         except Exception as e:
             print(e)
             print("no scans :(")
@@ -315,31 +323,7 @@ class Database():  # Defining the firebase class inside the main window class be
 
         return filtered
 
-    def returnScansFromUser(self, id):
-        return self.fsdb.collection(u"images").where("custID", "==", id).get()
-
-    def returnPracticeByLink(self, code):
-        return self.fsdb.collection(u"practices").where("linkCode", "==", code).get()
-
-    def returnOrgByLink(self, code):
-        return self.fsdb.collection(u"organisations").where("linkCode", "==", code).get()
-
-    def addNewPractice(self, name, admin, email, phone, addr, post, org):
-        data = {
-            "name": name,
-            "adminName": admin,
-            "contactEmail": email,
-            "contactNum": phone,
-            "address": addr,
-            "postcode": post,
-            "organisation": org,
-            "linkCode": self.generateNewIDFromDB("linkCode", u"practices")
-        }
-        x = self.fsdb.collection(u"practices").add(data)[1]
-        return x
-
-    def returnUsers(self):
-        return self.fsdb.collection(u"users").where("practice", "==", self.practice).get()
+    #####Models
 
     def checkModelUpdate(self):
         if self.gf.appInfo["modelversion"] == self.fsdb.collection(u"models").order_by("date", direction ="DESCENDING").limit(1).get()[0].to_dict()["modelversionname"]:

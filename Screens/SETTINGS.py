@@ -21,8 +21,6 @@ class SettingsScreen(MDScreen):
         self.org = globalFuncs.appInfo["org"]
         self.practice = globalFuncs.appInfo["practice"]
 
-        print(self.org)
-
         #this doesnt work for some reason
         #x = globalFuncs.database.fsdb.collection(u"organisations").document(self.org).get().to_dict()["name"]
         #y = globalFuncs.database.fsdb.collection(u"practices").document(self.org).get().to_dict()["name"]
@@ -31,12 +29,11 @@ class SettingsScreen(MDScreen):
         self.content.ids.pracname.text = self.practice
     def setupSwitchView(self):
         self.switches = []
-        print(globalFuncs.appSettings)
         for key in globalFuncs.appSettings:
             description = key
             state = bool(globalFuncs.appSettings[key])
-            print(globalFuncs.appSettings[key])
-            print(state)
+            #print(globalFuncs.appSettings[key])
+            #print(state)
             switch = MDSwitch(active = state,height = dp(30),size_hint_y = None,size_hint_x = None, width = dp(100))
             label = MDLabel(text = description,valign="center")
             listitem = MDBoxLayout(orientation="horizontal",spacing=1,size_hint_y = None, height = 50)

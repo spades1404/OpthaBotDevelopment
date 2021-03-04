@@ -140,7 +140,7 @@ class AddPXScreen(MDScreen):
         return
 
     def autoGenID(self):
-        self.content.ids.orgIDEntry.ids.numEntry.text = globalFuncs.database.generateNewIDFromDB("orgID", u"patients")
+        self.content.ids.orgIDEntry.ids.numEntry.text = globalFuncs.database.generateNewFieldNonRepeat("orgID", u"patients")
 
     def selectCalendar(self):
         date_dialog = MDDatePicker(callback=self.setDate)
