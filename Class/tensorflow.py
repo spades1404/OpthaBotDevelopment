@@ -2,7 +2,7 @@ from threading import Thread
 
 import numpy as np
 
-from Assets.lib.ImageFormatter import cropImageByColorDetection, resizeImage
+from Assets.ImageFormatter import cropImageByColorDetection, resizeImage
 
 
 class Tensorflow():

@@ -5,7 +5,7 @@ from datetime import datetime
 import numpy as np
 from PIL import Image
 
-from Assets.lib.ImageFormatter import cropImageByColorDetection, resizeImage
+from Assets.ImageFormatter import cropImageByColorDetection, resizeImage
 from Class.globalF import globalFuncs
 
 
