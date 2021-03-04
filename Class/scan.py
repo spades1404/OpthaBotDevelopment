@@ -1,24 +1,30 @@
-from datetime import datetime
-from PIL import Image
-from ImageProcessing.ImageFormatter import cropImageByColorDetection, resizeImage
-from Class.globalF import globalFuncs
 import random
 import string
+from datetime import datetime
+
 import numpy as np
+from PIL import Image
+
+from Assets.lib.ImageFormatter import cropImageByColorDetection, resizeImage
+from Class.globalF import globalFuncs
+
+
 class Scan():
     def __init__(self):
+        self.imageDirectory = None
+        self.result = []
         return
     def initialiseFromProg(self,fileLoc):
-        self.location = fileLoc
         self.scanTime = datetime.now()
+        self.fileName = "{}.jpg".format(''.join(random.choices(string.ascii_uppercase + string.digits, k=15)))
         self.originalImage = Image.open(fileLoc)
-        self.postProcessImage = self.preProcessImage(self.location)
-        self.fileName = r"{}{}.jpg".format(globalFuncs.directories.temp,
-                                           ''.join(random.choices(string.ascii_uppercase + string.digits, k=15)))
-        self.postProcessImage.save(self.fileName)
+        postProcessImage = self.preProcessImage(fileLoc)
+
+        self.imageDirectory = globalFuncs.directories.temp + self.fileName
+        postProcessImage.save(fp=self.imageDirectory)
         self.custID = ""
         self.serverID = None
-        self.uploaded = False
+
 
         return self
 
@@ -41,11 +47,14 @@ class Scan():
 
         return self
 
+    def uploadScanToDatabase(self):
+        globalFuncs.database.uploadScan(self)
+
+
     def grabImage(self):
-        self.imageDir = globalFuncs.directories.temp + (self.details["location"].split("/")[1])
-        globalFuncs.database.downloadFromFirebaseStorage(self.details["location"], self.imageDir)
-        self.postProcessDir = self.imageDir
-        print(self.imageDir)
+        print(globalFuncs.directories.temp)
+        self.imageDirectory = globalFuncs.directories.temp + (self.details["location"].split("/")[1])
+        globalFuncs.database.downloadFromFirebaseStorage(self.details["location"], self.imageDirectory)
 
     def updateDetails(self, custid, condition, *args):  # will only update the customer id or the real condition
         if custid.replace(" ", "") != "":
@@ -62,14 +71,13 @@ class Scan():
 
     def analyze(self): #this func takes a while
         #self.result = Tensorflow().analyzeImageSuccinct(self.postProcessImage)
-        self.result = self.indiscriminateFunctionToGenerateRandomFloatNumbersInAListSizeXthatEnumerateToAnIntegerSizeN()
+
+        if globalFuncs.appInfo["facade"] == True:
+            self.result = self.formatList(self.result)
         print(self.result)
         self.generateMultiDiListofResults()#
 
-    def generateTemp(self):
-        self.postProcessDir = self.fileName
-        self.postProcessImage.save(fp=self.postProcessDir)
-        return self.postProcessDir
+
 
     def generateMultiDiListofResults(self):
         self.resultList = [
@@ -83,7 +91,7 @@ class Scan():
             ["Other Abnormalities",self.result[7]],
         ]
 
-        self.resultList = sorted(self.resultList, key=lambda x: -x[1]) #Sort List by probability
+        self.resultList = sorted(self.resultList, key=lambda x: x[1],reverse=True) #Sort List by probability
 
 
     def indiscriminateFunctionToGenerateRandomFloatNumbersInAListSizeXthatEnumerateToAnIntegerSizeN(self):
@@ -117,5 +125,6 @@ class Scan():
             self.resultList[7][1]
         )
 
-
+    def formatList(self,*args):
+        return self.indiscriminateFunctionToGenerateRandomFloatNumbersInAListSizeXthatEnumerateToAnIntegerSizeN()
 

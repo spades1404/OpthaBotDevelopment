@@ -75,6 +75,7 @@ Screen:
             BoxLayout:
                 orientation: "vertical" 
                 MDToolbar:
+                    id:toolbar
                     title: "OpthaBot"
                     elevation: 10
                     left_action_items: [["menu", lambda x: navDraw.set_state("toggle")]]
@@ -375,7 +376,7 @@ addPXHelper = '''
         ripple_scale: .5
         pos_hint: {"center_y": .5}
         pos: dateEntry.width - self.width + dp(8), 0
-        on_release: app.primaryScreen.searchScreen.addUserScreen.selectCalendar()
+        on_release: app.primaryScreen.searchScreen.addPXScreen.selectCalendar()
         
 <IDSelector@RelativeLayout>:
     size_hint_y: None
@@ -396,7 +397,7 @@ addPXHelper = '''
         ripple_scale: .5
         pos_hint: {"center_y": .5}
         pos: numEntry.width - self.width + dp(8), 0
-        on_release: app.primaryScreen.searchScreen.addUserScreen.autoGenID()
+        on_release: app.primaryScreen.searchScreen.addPXScreen.autoGenID()
         
 Screen:
     name: "adduser"
@@ -458,7 +459,7 @@ Screen:
                 text: "Add Patient"
                 halign:"center"
                 valign:"center"
-                on_release: app.primaryScreen.searchScreen.addUserScreen.addUser()
+                on_release: app.primaryScreen.searchScreen.addPXScreen.addPX()
                 
             MDSpinner:
                 size_hint:None,None
@@ -588,7 +589,7 @@ Screen:
                 text: "Update Patient Details"
                 halign:"center"
                 valign:"center"
-                on_release: app.primaryScreen.searchScreen.viewUserScreen.updateUserDetails()
+                on_release: app.primaryScreen.searchScreen.viewPXScreen.updateUserDetails()
                 
             MDSpinner:
                 size_hint:None,None
@@ -1130,24 +1131,30 @@ Screen:
                 id: usernameEntry
                 hint_text: "Username"
                 mode: "rectangle"
+                
+            Widget:
+            Widget:
                
-            MDTextField:
-                id: passwordEntry
-                hint_text: "Password"
-                mode: "rectangle"
+        MDBoxLayout:
+            orientation: "horizontal"
+            spacing:15
+            
+            MDRaisedButton:
+                text: "Change Password"
+                on_release: app.primaryScreen.viewUsers.changePass()
                 
                 
             MDRaisedButton:
                 text:"Select Access Level"
                 id:setacc
                 on_release:app.primaryScreen.viewUsers.setAccessLevel("VIEWUSER")
-        MDBoxLayout:
-            orientation: "horizontal"
-            spacing:15
+                
+            
             MDRaisedButton:
                 text: "Update"
                 md_bg_color: app.theme_cls.primary_color
                 on_release: app.primaryScreen.viewUsers.updateUser()
+                
             
             MDSpinner:
                 size_hint:None,None

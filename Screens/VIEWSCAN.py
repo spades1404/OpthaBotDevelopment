@@ -1,13 +1,13 @@
 #THIS SCREEN IS TO VIEW A SINGLE SCAN
 
-from kivymd.uix.screen import MDScreen
-from kivy.lang import Builder
-from Screens.HELPERS import viewScanHelper
-from kivymd.uix.menu import MDDropdownMenu
 from kivy.clock import Clock
-from functools import partial
+from kivy.lang import Builder
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.screen import MDScreen
 
 from Class.scan import Scan
+from Screens.HELPERS import viewScanHelper
+
 
 class ViewScanScreen(MDScreen):
     def __init__(self):
@@ -56,7 +56,7 @@ class ViewScanScreen(MDScreen):
         self.content.ids.results.text = scan.generateDescription()
         self.content.ids.orgid.text = scan.details["custID"]
         self.content.ids.field.text = scan.details["diagnosis"]
-        self.content.ids.image.source = scan.postProcessDir
+        self.content.ids.image.source = scan.imageDirectory
         return
 
     def deleteScan(self, *args):
@@ -77,7 +77,7 @@ class ViewScanScreen(MDScreen):
         self.content.ids.orgid.text = scan.details["custID"]
         self.content.ids.field.text = scan.details["diagnosis"]
         scan.grabImage()
-        self.content.ids.image.source = scan.postProcessDir
+        self.content.ids.image.source = scan.imageDirectory
 
         print(scan.details)
 

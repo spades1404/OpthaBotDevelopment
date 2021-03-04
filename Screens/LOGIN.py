@@ -1,6 +1,7 @@
+from threading import Thread
+
 from kivy.lang.builder import Builder
 from kivymd.uix.screen import MDScreen
-from threading import Thread
 
 from Class.globalF import globalFuncs
 from Class.user import User
@@ -38,8 +39,12 @@ class LogInScreen(MDScreen):
             self.parent.current_screen.configureMenu(0)
             self.content.ids.spinner.active = False
 
-        Thread(target=function, daemon=True).start()  # bypasses login for us
-        # Thread(target=function, daemon=True).start()
+
+        if bool(globalFuncs.appInfo["devMode"]) == True:
+            Thread(target=bypassLogin, daemon=True).start()
+
+        elif bool(globalFuncs.appInfo["devMode"]) == False:
+            Thread(target=function, daemon=True).start()  # bypasses login for us
 
     def logInFailed(self):
         self.content.ids.userEntry.error = True

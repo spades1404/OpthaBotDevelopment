@@ -1,4 +1,3 @@
-from Class.validation import Validation
 class Profile(): #Base profile super class
     def __init__(self,obj):
         self.document = obj
@@ -8,9 +7,6 @@ class Profile(): #Base profile super class
         self.fname = self.details["fName"]
         self.lname = self.details["lName"]
         self.email = self.details["email"]
-
-
-
         return
 
 
@@ -32,39 +28,11 @@ class Patient(Profile):
         self.postcode = self.details["postcode"]
         return
 
+    def changePW(self):
+        return
+
 
     def updatePXdetails(self,fname,lname,email,id,postcode,phone,addy,date):
-        '''
-        f = [fname, lname, email, id, postcode, phone, addy]
-        for i in [i.replace(" ", "") for i in f]:
-            if i == "":
-                return "Not all fields filled"
-
-        validation = Validation()
-
-        if validation.validatePlainString(fname,numCheck=True) == False or validation.validatePlainString(lname, numCheck=True) == False:
-            return "Name must not have numbers"
-
-        if validation.checkEmail(email) == False:
-            return "Invalid Email"
-
-        if validation.validatePlainString(id) == False:
-            return "ID is not a valid string"
-
-        if validation.checkNumber(phone) == False:
-            return "Invalid Number"
-
-        if validation.checkDate(date) == False:
-            return "Invalid Date"
-
-        # if globalFuncs.validation.validatePlainString(addy) == False:
-        #    return "Address is not a valid string"
-
-        if validation.checkPostcode(postcode) == False:
-            return "Postcode is not valid"
-
-        '''
-
         changes = {}
         if fname.replace(" ","") != "" and self.details["fName"] != fname:
             changes["fName"] = fname

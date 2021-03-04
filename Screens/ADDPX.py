@@ -1,15 +1,17 @@
-from kivy.lang.builder import Builder
-from kivymd.uix.screen import MDScreen
-from kivymd.uix.dialog import MDDialog
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.properties import StringProperty
-from kivymd.uix.picker import MDDatePicker
-from kivymd.uix.button import MDFlatButton
-
-from Screens.HELPERS import addPXHelper
-from Class.globalF import globalFuncs
-from threading import Thread
 from functools import partial
+from threading import Thread
+
+from kivy.lang.builder import Builder
+from kivy.properties import StringProperty
+from kivy.uix.relativelayout import RelativeLayout
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.picker import MDDatePicker
+from kivymd.uix.screen import MDScreen
+
+from Class.globalF import globalFuncs
+from Screens.HELPERS import addPXHelper
+
 
 class AddPXScreen(MDScreen):
     def __init__(self):
@@ -53,11 +55,14 @@ class AddPXScreen(MDScreen):
 
                 globalFuncs.dialog.open()
                 self.content.ids.spinner.active = False
+            elif c== 0:
+                execute(fname, lname, email, id, postcode, phone,addy, dob)
+                self.content.ids.spinner.active = False
             return
 
         def execute(fname, lname, email, id, postcode, phone, addy, dob, *args):
             self.content.ids.spinner.active = True
-            globalFuncs.dialog.dismiss()
+            globalFuncs.closeDialog()
             if globalFuncs.validation.validatePlainString(fname, numCheck=True) == False and fname.replace(" ",
                                                                                                            "") != "" or globalFuncs.validation.validatePlainString(
                     lname, numCheck=True) == False and lname.replace(" ", "") != "":
@@ -71,11 +76,11 @@ class AddPXScreen(MDScreen):
                 return
 
             if globalFuncs.validation.checkEmail(email) == False and globalFuncs.appSettings[
-                "Always verify emails"] == True and email.replace(" ", "") != "":
+                "Always verify emails are valid"] == True and email.replace(" ", "") != "":
                 globalFuncs.dialog = MDDialog(
                     title="Error",
                     text="The email entered is not valid",
-                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.closeDialog)]
                 )
                 globalFuncs.dialog.show()
                 self.content.ids.spinner.active = False
@@ -85,18 +90,18 @@ class AddPXScreen(MDScreen):
                 globalFuncs.dialog = MDDialog(
                     title="Error",
                     text="The ID entered is not valid, an ID is a required field",
-                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.closeDialog)]
                 )
                 globalFuncs.dialog.open()
                 self.content.ids.spinner.active = False
                 return
 
             if globalFuncs.validation.checkNumber(phone) == False and globalFuncs.appSettings[
-                "Always check phone numbers"] == True and phone.replace(" ", "") != "":
+                "Always verify phone numbers are valid"] == True and phone.replace(" ", "") != "":
                 globalFuncs.dialog = MDDialog(
                     title="Error",
                     text="The number entered is not valid",
-                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.closeDialog)]
                 )
                 globalFuncs.dialog.open()
                 self.content.ids.spinner.active = False
@@ -106,7 +111,7 @@ class AddPXScreen(MDScreen):
                 globalFuncs.dialog = MDDialog(
                     title="Error",
                     text="The date of birth entered is not valid",
-                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.closeDialog)]
                 )
                 globalFuncs.dialog.open()
                 self.content.ids.spinner.active = False
@@ -119,7 +124,7 @@ class AddPXScreen(MDScreen):
                 globalFuncs.dialog = MDDialog(
                     title="Error",
                     text="The postcode entered is not valid",
-                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.dialog.dismiss)]
+                    buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.closeDialog)]
                 )
                 globalFuncs.dialog.open()
                 self.content.ids.spinner.active = False

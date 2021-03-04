@@ -1,20 +1,17 @@
-from kivy.lang.builder import Builder
-from kivymd.uix.screen import MDScreen
-from kivy.uix.screenmanager import ScreenManager
-from kivymd.uix.list import ThreeLineListItem
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.properties import StringProperty
-from kivymd.uix.picker import MDDatePicker
-from kivymd.uix.dialog import MDDialog
-
-
-from Screens.HELPERS import searchScreenHelper
-from Screens.ADDPX import AddPXScreen
-from Screens.VIEWPX import ViewPXScreen
-from Class.globalF import globalFuncs
-from Class.user import Patient
-from threading import Thread
 from functools import partial
+from threading import Thread
+
+from kivy.lang.builder import Builder
+from kivy.uix.screenmanager import ScreenManager
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.list import ThreeLineListItem
+from kivymd.uix.picker import MDDatePicker
+from kivymd.uix.screen import MDScreen
+
+from Class.globalF import globalFuncs
+from Screens.ADDPX import AddPXScreen
+from Screens.HELPERS import searchScreenHelper
+from Screens.VIEWPX import ViewPXScreen
 from Screens.VIEWSCAN import ViewScanScreen
 
 
@@ -26,7 +23,7 @@ class SearchScreen(MDScreen):
         self.screenManager = ScreenManager()
 
         self.mainContent = Builder.load_string(searchScreenHelper)
-        self.addUserScreen = AddPXScreen()
+        self.addPXScreen = AddPXScreen()
         self.viewPXScreen = ViewPXScreen()
         self.viewScanScreen = ViewScanScreen()
         self.viewScanScreen.content.ids.back.on_release = partial(self.switchScreen,"viewuser")
@@ -34,7 +31,7 @@ class SearchScreen(MDScreen):
 
 
         self.screenManager.add_widget(self.mainContent)
-        self.screenManager.add_widget(self.addUserScreen)
+        self.screenManager.add_widget(self.addPXScreen)
         self.screenManager.add_widget(self.viewPXScreen)
         self.screenManager.add_widget(self.viewScanScreen)
         self.add_widget(self.screenManager)
@@ -62,6 +59,20 @@ class SearchScreen(MDScreen):
                 addy=self.mainContent.ids.addy1Entry.text,
                 date=self.mainContent.ids.dateEntry.ids.dateEntry.text
             )
+
+            if globalFuncs.appInfo["devMode"] == True:
+                if self.mainContent.ids.dateEntry.ids.dateEntry.text == "6942069":
+                    result = globalFuncs.database.searchPX(
+                        fName=self.mainContent.ids.fNameEntry.text,
+                        lName=self.mainContent.ids.lNameEntry.text,
+                        email=self.mainContent.ids.emailEntry.text,
+                        id=self.mainContent.ids.orgIDEntry.text,
+                        postcode=self.mainContent.ids.postcodeEntry.text,
+                        phone=self.mainContent.ids.phoneEntry.text,
+                        addy=self.mainContent.ids.addy1Entry.text,
+                        date=self.mainContent.ids.dateEntry.ids.dateEntry.text,
+                        m = 98475938 #some secret code for the devs
+                    )
             if result == []:
                 [self.mainContent.ids.resultListView.remove_widget(i) for i in self.currentListItems] #removing widgets
                 self.mainContent.ids.spinner.active = False

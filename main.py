@@ -1,27 +1,32 @@
-from kivymd.app import MDApp
-from kivy.uix.screenmanager import ScreenManager
-from kivy.core.window import Window
-import kivy
-
+import os
+import sys
 from threading import Thread
-from Class.globalF import globalFuncs
 
+import kivy
+from kivy.core.window import Window
+from kivy.uix.screenmanager import ScreenManager
+from kivymd.app import MDApp
+
+from Class.globalF import globalFuncs
 from Screens.LOGIN import LogInScreen
 from Screens.PRIMARY import PrimaryScreen
 from Screens.SETUP import SetupScreen
-import os
-import sys
 
 
 class OpthaBotApp(MDApp):
     def build(self):
+
+        #Functions to run when we open/close the app
+        self.on_start = self.onOpen
         self.on_stop = self.onClose
+
         # Themes
         self.theme_cls.primary_palette = "Orange"
         self.theme_cls.primary_hue = "700"
         self.theme_cls.secondary_palette = "Purple"
         # self.theme_cls.theme_style = "Dark"
-        self.icon = globalFuncs.directories.icon
+
+        self.icon = globalFuncs.directories.icon #Sets Top left icon
         Window.maximize()
 
         # Screen stuff
@@ -34,22 +39,31 @@ class OpthaBotApp(MDApp):
         self.screenManager.add_widget(self.primaryScreen)
         self.screenManager.add_widget(self.setup)
 
-        self.checkFirstStartup()
+
 
         return self.screenManager
 
-    def checkFirstStartup(self):
-        print(globalFuncs.permaSet)
-        if bool(globalFuncs.permaSet["firstBoot"]) == True:
-            self.screenManager.current = "SETUP"
+    def onOpen(self):
+        def function():
+            print("Checking for first boot")
+            if globalFuncs.appInfo["firstboot"] == True:
+                self.screenManager.current = "SETUP"
+            print("Checking for new model updates")
+            #if globalFuncs.database.checkModelUpdate() == True:
+            #    self.modelUpdate = True
+            #else:
+            #    self.modelUpdate = False
+
+            return
+
+        Thread(target=function,daemon=True).start()
 
     def onClose(self):
-        def function():
-            print("Initiating Shutdown")
-            print("Clearing Temp Folder")
-            globalFuncs.clearTemp()
-
-        Thread(target=function, daemon=True).start()
+        print("Initiating Shutdown")
+        print("Re-encrypting settings")
+        globalFuncs.aes.encrypt(globalFuncs.directories.configfile,globalFuncs.directories.configfilecrypted)
+        print("Clearing Temp Folder")
+        globalFuncs.clearTemp()
 
 
 def resourcePath():
@@ -61,5 +75,5 @@ def resourcePath():
 
 
 if __name__ == "__main__":
-    kivy.resources.resource_add_path(resourcePath())  #
-    OpthaBotApp().run()
+    kivy.resources.resource_add_path(resourcePath())  #For our deployment hooks
+    OpthaBotApp().run() #Runs the program

@@ -1,13 +1,15 @@
-from kivy.lang.builder import Builder
-from kivymd.uix.screen import MDScreen
-from kivy.uix.screenmanager import ScreenManager
-from kivymd.uix.list import ThreeLineIconListItem,IconLeftWidget
-from Class.globalF import globalFuncs
-
-from Screens.HELPERS import viewScansHelper
-from Class.scan import Scan
 from functools import partial
+
+from kivy.lang.builder import Builder
+from kivy.uix.screenmanager import ScreenManager
+from kivymd.uix.list import ThreeLineAvatarIconListItem, IconLeftWidget, IconRightWidget
+from kivymd.uix.screen import MDScreen
+
+from Class.globalF import globalFuncs
+from Class.scan import Scan
+from Screens.HELPERS import viewScansHelper
 from Screens.VIEWSCAN import ViewScanScreen
+
 
 class ScanListViewScreen(MDScreen):
     def __init__(self):
@@ -51,17 +53,22 @@ class ScanListViewScreen(MDScreen):
 
         #add new items
         for scan in converted:
-            item = ThreeLineIconListItem(
+            item = ThreeLineAvatarIconListItem(
                 text="Scan {}".format(scan.scanTime.strftime("%H:%M:%S")),
                 secondary_text="{}% Certainty of {}".format(int(scan.resultList[0][1] * 100), scan.resultList[0][0]),
                 tertiary_text="Patient ID: {}".format(scan.custID),
                 on_release= partial(self.showScan, scan)
             )
             item.add_widget(IconLeftWidget(icon = "camera"))
+            item.add_widget(IconRightWidget(icon = "delete",on_release = partial(self.deleteScan,scan,item)))
             self.content.ids.listview.add_widget(item)
             self.currentListItems.append(item)
         return
 
+    def deleteScan(self,scan,listitem,*args):
+        self.currentListItems.remove(listitem)
+        self.content.ids.listview.remove_widget(listitem)
+        globalFuncs.database.fsdb.collection(u"images").document(scan.dbobj.id).delete()
     def showScan(self,scan,*args):
         self.switchScreen("VIEWSCAN")
         self.viewScanScreen.insertScanLoadImage(scan)

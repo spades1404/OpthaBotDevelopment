@@ -1,19 +1,16 @@
-from kivy.lang.builder import Builder
-from kivymd.uix.screen import MDScreen
-from kivymd.uix.list import ThreeLineAvatarIconListItem,OneLineListItem,IconLeftWidget
-from kivymd.uix.dialog import MDDialog
-from kivy.uix.screenmanager import ScreenManager
 from functools import partial
+from threading import Thread
 
+from kivy.lang.builder import Builder
+from kivy.uix.screenmanager import ScreenManager
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.list import ThreeLineAvatarIconListItem, OneLineListItem, IconLeftWidget
+from kivymd.uix.screen import MDScreen
 
 from Class.globalF import globalFuncs
 from Class.scan import Scan
-
 from Screens.HELPERS import homeContentHelper
 from Screens.VIEWSCAN import ViewScanScreen
-
-
-from threading import Thread
 
 
 class HomeScreen(MDScreen):
@@ -59,7 +56,7 @@ class HomeScreen(MDScreen):
             on_release=partial(self.showScan, scan)
 
         )
-        item.add_widget(IconLeftWidget(icon=scan.postProcessDir))
+        item.add_widget(IconLeftWidget(icon=scan.imageDirectory))
         self.listItems.append([item, scan])
 
         self.content.ids.listView.add_widget(item)
@@ -85,7 +82,7 @@ class HomeScreen(MDScreen):
 
             self.updateInfoText("File Found! - Testing")
 
-            if bool(globalFuncs.appSettings["Require Customer ID's on Scan"]) == True and (self.content.ids.pxidField.text).replace(" ", "") == "":
+            if bool(globalFuncs.appSettings["Always require patient ID on scan"]) == True and (self.content.ids.pxidField.text).replace(" ", "") == "":
                 MDDialog(
                     title="Error",
                     text="No ID Has been entered, please enter one and retry",
@@ -105,8 +102,7 @@ class HomeScreen(MDScreen):
             else:
                 try:
                     scan = Scan().initialiseFromProg(filename)
-                    scan.generateTemp()
-                    self.content.ids.currentImage.source = scan.postProcessDir
+                    self.content.ids.currentImage.source = scan.imageDirectory
 
                     if self.content.ids.pxidField.text.replace(" ", "") != "":
                         scan.custID = self.content.ids.pxidField.text
@@ -117,10 +113,8 @@ class HomeScreen(MDScreen):
                     self.addScanToListView(scan)
                     self.updateInfoText("Image Processed Successfully")
 
-                    # if globalFuncs.appSettings["Automatically Upload Scans"] == True:
-                    #    globalFuncs.database.uploadScan(scan)
                     self.updateInfoText("Uploading Scan To Server")
-                    globalFuncs.database.uploadScan(scan)
+                    scan.uploadScanToDatabase()
                     self.updateInfoText("Done!")
                 except Exception as e:
                     print(e)

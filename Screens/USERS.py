@@ -1,16 +1,14 @@
-from kivymd.uix.screen import MDScreen
-from kivy.uix.screenmanager import ScreenManager
-from kivy.lang.builder import Builder
-from kivymd.uix.list import OneLineListItem
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
-
-from Screens.HELPERS import addUserHelper, viewUserHelper, viewAllUsersHelper
-
-from Class.globalF import globalFuncs
 from functools import partial
 
-from threading import Thread
+from kivy.lang.builder import Builder
+from kivy.uix.screenmanager import ScreenManager
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.list import OneLineListItem
+from kivymd.uix.screen import MDScreen
+
+from Class.globalF import globalFuncs
+from Screens.HELPERS import addUserHelper, viewUserHelper, viewAllUsersHelper
 
 
 class ViewUsersScreen(MDScreen):
@@ -33,6 +31,30 @@ class ViewUsersScreen(MDScreen):
         self.on_pre_leave = self.eraseList
 
         self.val = 2
+
+    def changePass(self):
+        def function(*args):
+            globalFuncs.closeDialog()
+            pw = globalFuncs.dialog.content_cls.ids.password.text
+            globalFuncs.database.fsdb.collection(u"users").document(self.user.id).update({"password":globalFuncs.password.genHash(pw)})
+            return
+
+        globalFuncs.dialog = MDDialog(
+            title="Enter your new password",
+            type="custom",
+            content_cls=Builder.load_string(content2),
+            auto_dismiss=False,
+            buttons=[MDFlatButton(text="Set", on_release=function)]
+        )
+        '''
+        globalFuncs.dialog = MDDialog(
+            title="Enter your new password",
+            type = "custom",
+            content_cls = Builder.load_string(content2),
+            Buttons = [MDFlatButton(text= "Set",on_release = function)],
+            auto_dismiss = False)
+        '''
+        globalFuncs.dialog.open()
 
     def grabUser(self):
         [self.viewAllScreen.ids.listview.add_widget(
@@ -84,9 +106,8 @@ class ViewUsersScreen(MDScreen):
             "lName": self.addUserScreen.ids.lnameEntry.text,
             "email": self.addUserScreen.ids.emailEntry.text,
             "username": self.addUserScreen.ids.usernameEntry.text,
-            "password": self.addUserScreen.ids.passwordEntry.text,
             "accessLevel": self.val,
-            "practice": globalFuncs.permaSet["practice"]
+            "practice": globalFuncs.appInfo["practice"]
         }
 
         for key in data:
@@ -112,7 +133,7 @@ class ViewUsersScreen(MDScreen):
             "username": self.viewUserScreen.ids.usernameEntry.text,
             "password": self.viewUserScreen.ids.passwordEntry.text,
             "accessLevel": self.val,
-            "practice": globalFuncs.permaSet["practice"]
+            "practice": globalFuncs.appInfo["practice"]
         }
 
         globalFuncs.database.fsdb.collection(u"users").document(self.user.id).update(data)
@@ -129,7 +150,6 @@ class ViewUsersScreen(MDScreen):
         self.viewUserScreen.ids.lnameEntry.text = x["lName"]
         self.viewUserScreen.ids.emailEntry.text = x["email"]
         self.viewUserScreen.ids.usernameEntry.text = x["username"]
-        self.viewUserScreen.ids.passwordEntry.text = x["password"]
         self.val = x["accessLevel"]
 
         return
@@ -152,6 +172,12 @@ GridLayout:
         id:three
     MDLabel:
         text:"Limited"
-        
-     
+'''
+
+content2 = '''
+MDBoxLayout:
+    orientation:"vertical"
+    MDTextField:
+        hint_text: "New Password"
+        id:password
 '''

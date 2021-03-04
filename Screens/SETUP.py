@@ -1,14 +1,15 @@
-from kivymd.uix.screen import MDScreen
-from kivy.uix.screenmanager import ScreenManager
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton, MDRaisedButton
-from kivy.lang.builder import Builder
 from functools import partial
+from threading import Thread
+
+from kivy.lang.builder import Builder
+from kivy.uix.screenmanager import ScreenManager
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.screen import MDScreen
 
 from Class.globalF import globalFuncs
 from Screens.HELPERS import introScreenHelper, setupExistingHelper, setupNewHelper, setupPracticeHelper, \
     setupAdminAccHelper
-from threading import Thread
 
 
 class SetupScreen(MDScreen):
@@ -37,15 +38,17 @@ class SetupScreen(MDScreen):
 
         globalFuncs.closeDialog()
 
+    def saveSets(self):
+        globalFuncs.config.set("appinfo","org",self.practice.to_dict()["organisation"])
+        globalFuncs.config.set("appinfo","practice",self.practice.id)
+        globalFuncs.config.set("appinfo","firstboot","False")
+        globalFuncs.saveConfig()
+
     def completeSetup(self, *args):  ##only for setting up an existing practice
         self.parent.current = "LOGIN"
 
         # saving all the info
-        globalFuncs.permaSet["org"] = self.practice.to_dict()["organisation"]
-        globalFuncs.permaSet["practice"] = self.practice.id
-        globalFuncs.permaSet["firstBoot"] = False
-        globalFuncs.jsonSave(globalFuncs.permaSet, globalFuncs.directories.appPermaSets)
-
+        self.saveSets()
         globalFuncs.closeDialog()
 
     def verifyPracCode(self, code):
@@ -262,10 +265,7 @@ class SetupScreen(MDScreen):
                 return
 
             # saving all the info
-            globalFuncs.permaSet["org"] = self.org.id
-            globalFuncs.permaSet["practice"] = self.practice.id
-            globalFuncs.permaSet["firstBoot"] = False
-            globalFuncs.jsonSave(globalFuncs.permaSet, globalFuncs.directories.appPermaSets)
+            self.saveSets()
             result = globalFuncs.database.createUser(fname, lname, email, user, passw, 1, self.practice.id)
             self.setupAdmin.ids.spinner.active = False
             self.parent.current = "LOGIN"

@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 
-/Tensorflow/Model/model.h5
+/Assets/model.h5
