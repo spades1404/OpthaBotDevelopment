@@ -2,15 +2,17 @@ from threading import Thread
 
 import numpy as np
 
-from Assets.ImageFormatter import cropImageByColorDetection, resizeImage
+from Other.ImageFormatter import cropImageByColorDetection, resizeImage
+
+from Class.globalF import globalFuncs
 
 
 class Tensorflow():
     def __init__(self):
         Thread(target=self.finishInit,daemon=True).start()
     def finishInit(self):
-        pass
-        #self.model = tf.keras.models.load_model(Directories().model)
+        import tensorflow as tf
+        self.model = tf.keras.models.load_model(globalFuncs.directories.model)
 
     def analyzeImageVerbose(self, dir):
         try:

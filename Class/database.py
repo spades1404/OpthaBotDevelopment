@@ -34,7 +34,7 @@ class Database():  # Defining the firebase class inside the main window class be
 
         self.storage = pyrebase.initialize_app(pyrebasekey).storage()  # Setting up Pyrebase so we can access the firestore
         self.fsdb = fs.client()  # Object for accessing the firebase - where descriptive data is
-        self.dropbox = dropbox.Dropbox(dropboxkey["accessToken"])
+        self.dropbox = dropbox.Dropbox(dropboxkey["accessToken"]) #dropbox property to access dropbox
 
         #Setting the globalFuncs object as an attribute so it can be accessed outside this init
         self.gf = globalFuncs
@@ -82,7 +82,7 @@ class Database():  # Defining the firebase class inside the main window class be
 
         return x
 
-    def similar(self, a, b):
+    def simmilar(self, a, b):
         return SequenceMatcher(None, a, b).ratio()
 
     def compareDate(self, date1, date2):
@@ -222,19 +222,19 @@ class Database():  # Defining the firebase class inside the main window class be
             s7 = 0
             s8 = 0
             if fName.replace(" ", "") != "":
-                s1 = (self.similar(fName, x["fName"])) / 7
+                s1 = (self.simmilar(fName, x["fName"])) / 7
             if lName.replace(" ", "") != "":
-                s2 = (self.similar(lName, x["lName"])) / 7
+                s2 = (self.simmilar(lName, x["lName"])) / 7
             if email.replace(" ", "") != "":
-                s3 = (self.similar(email, x["email"])) / 7
+                s3 = (self.simmilar(email, x["email"])) / 7
             if id.replace(" ", "") != "":
-                s4 = (self.similar(id, x["orgID"])) / 3  # we give this a higher weighting
+                s4 = (self.simmilar(id, x["orgID"])) / 3  # we give this a higher weighting
             if postcode.replace(" ", "") != "":
-                s5 = (self.similar(postcode, x["postcode"])) / 7
+                s5 = (self.simmilar(postcode, x["postcode"])) / 7
             if phone.replace(" ", "") != "":
-                s6 = (self.similar(phone, x["phoneNumber"])) / 7
+                s6 = (self.simmilar(phone, x["phoneNumber"])) / 7
             if addy.replace(" ", "") != "":
-                s7 = (self.similar(addy, x["addressLine"])) / 7
+                s7 = (self.simmilar(addy, x["addressLine"])) / 7
 
             try:
                 y = x["dob"]
@@ -257,9 +257,9 @@ class Database():  # Defining the firebase class inside the main window class be
         #
         multidlist = []
         for i in range(len(allRecords)):
-            multidlist.append([allRecords[i], scoreList[i]])
+            multidlist.append([allRecords[i], scoreList[i]]) ##generating a multi d list [[record, score]...]
 
-        multidlist = sorted(multidlist, key=lambda x: x[1], reverse=True)
+        multidlist = sorted(multidlist, key=lambda x: x[1], reverse=True) #sorting records by score
 
         allRecords = [Patient(i[0]) for i in multidlist if i[1] > 0.05]
 

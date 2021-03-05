@@ -6,7 +6,7 @@ import numpy as np  # NumPy extlib
 import smartcrop  # Image analyis library, allows intelligent cropping
 from PIL import Image  # Python pillow image library
 
-from Assets.RESIZE import resize_contain
+from Other.RESIZE import resize_contain
 
 
 ##NOTE NOT ALL OF THESE FUNCTIONS ENDED UP BEING USED - THEY ARE KEPT HERE IN CASE OF USE IN OTHER AREAS##
@@ -78,7 +78,7 @@ def resizeImage(img, dim=500):
     return background
 
 
-def cropImageByColorDetection(file):  # Credit to jamisonbryant for pycropper
+def cropImageByColorDetection(file):
     TOLERANCE = 20  # Tolerance for colour change detection
 
     if type(file) == str:
@@ -198,7 +198,7 @@ def cropImageByColorDetection(file):  # Credit to jamisonbryant for pycropper
     cropped_image = image.crop((left_edge_coord, top_edge_coord, right_edge_coord, bottom_edge_coord))
     # image.show()
     # cropped_image.show()
-    return resizeImage(cropped_image)
+    return cropped_image
 
 
 def cropBySmartcrop(filename):  # this version is deprecated - cause it sucks - cause smartcrop sucks

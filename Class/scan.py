@@ -5,8 +5,9 @@ from datetime import datetime
 import numpy as np
 from PIL import Image
 
-from Assets.ImageFormatter import cropImageByColorDetection, resizeImage
+from Other.ImageFormatter import cropImageByColorDetection, resizeImage
 from Class.globalF import globalFuncs
+from Class.tensorflow import Tensorflow
 
 
 class Scan():
@@ -18,10 +19,10 @@ class Scan():
         self.scanTime = datetime.now()
         self.fileName = "{}.jpg".format(''.join(random.choices(string.ascii_uppercase + string.digits, k=15)))
         self.originalImage = Image.open(fileLoc)
-        postProcessImage = self.preProcessImage(fileLoc)
+        self.postProcessImage = self.preProcessImage(fileLoc)
 
         self.imageDirectory = globalFuncs.directories.temp + self.fileName
-        postProcessImage.save(fp=self.imageDirectory)
+        self.postProcessImage.save(fp=self.imageDirectory)
         self.custID = ""
         self.serverID = None
 
@@ -70,9 +71,9 @@ class Scan():
         return image
 
     def analyze(self): #this func takes a while
-        #self.result = Tensorflow().analyzeImageSuccinct(self.postProcessImage)
+        self.result = Tensorflow().analyzeImageSuccinct(self.postProcessImage)
 
-        if globalFuncs.appInfo["facade"] == True:
+        if globalFuncs.appInfo["facade"] == False:
             self.result = self.formatList(self.result)
         print(self.result)
         self.generateMultiDiListofResults()#

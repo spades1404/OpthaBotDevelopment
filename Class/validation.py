@@ -15,47 +15,47 @@ class Validation():
 
     def checkWifi(self):
         try:
-            r = requests.get("http://www.google.com",timeout = 20)
-            return True
+            r = requests.get("http://www.google.com",timeout = 20) # Send request to google, it will timeout with exception if it fails
+            return True # We are connected to wifi
         except:
-            return False
+            return False # We are not connected to wifi
 
     def checkEmail(self,email):
         return validate_email(email) #Validating using this lib function
 
     def checkPostcode(self,postcode):
         try:
-            UKPostcode(postcode).validate()
+            UKPostcode(postcode).validate() #If this statement fails then we know that the postcode provided is not valid.
             return True
         except:
             return False
 
     def validatePlainString(self,strng,numCheck=False):
-        strng.replace("-","")
+        strng.replace("-","") #Strings are allowed to have dashes
         print(strng)
 
         if strng.isalnum() == False:  # IF THE STRING IS NOT ALPHANUMERIC RETURN FALSE
             return False
 
         if numCheck == True:
-            c = 0
-            for i in strng:
-                if i.isnumeric() == True:
-                    c += 1
-            if c > 0:
-                return False
+            c = 0 #counts the number of numbers encountered
+            for i in strng: #cycles through the characters in the string
+                if i.isnumeric() == True: #checks if the character is a number
+                    c += 1 #increments the count
+            if c > 0: #checks if there were any numbers in the string
+                return False #return false for not valid if yes
 
         return True
 
     def checkNumber(self,num): #verifies phone numbers NUMBER MUST BE STR
         try:
-            return carrier._is_mobile(number_type(phonenumbers.parse(num,"GB")))
+            return carrier._is_mobile(number_type(phonenumbers.parse(num,"GB"))) #This will either return True or will fail in which case we will return false
         except:
             return False
 
     def checkImage(self,source):
         try:
-            Image.open(source)
+            Image.open(source) #Try and open the image
             return True
         except:
             return False
