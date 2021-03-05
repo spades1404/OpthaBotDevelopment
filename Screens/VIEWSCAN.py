@@ -54,7 +54,7 @@ class ViewScanScreen(MDScreen):
         self.scan = scan
 
         self.content.ids.results.text = scan.generateDescription()
-        self.content.ids.orgid.text = scan.details["custID"]
+        self.content.ids.orgid.text = scan.custID
         self.content.ids.field.text = scan.details["diagnosis"]
         self.content.ids.image.source = scan.imageDirectory
         return

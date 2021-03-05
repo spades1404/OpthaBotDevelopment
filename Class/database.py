@@ -290,12 +290,9 @@ class Database():  # Defining the firebase class inside the main window class be
 
         result = self.fsdb.collection(u"images").add(scanRes)
         scan.serverID = result[1].id
-        print()
-        scan.dbobj = self.fsdb.collection(u"images").document(scan.serverID).get()
-        scan.details = scan.dbobj.to_dict()
         print(scanRes)
 
-        return
+        return (self.fsdb.collection(u"images").document(scan.serverID).get(),scan.dbobj.to_dict())
 
     def updateDiagnosis(self, sourceID, cond):
         record = self.fsdb.collection(u"images").document(sourceID)

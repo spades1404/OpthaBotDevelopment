@@ -5,13 +5,10 @@ import numpy as np
 from Other.ImageFormatter import cropImageByColorDetection, resizeImage
 
 from Class.globalF import globalFuncs
-
+import tensorflow as tf
 
 class Tensorflow():
     def __init__(self):
-        Thread(target=self.finishInit,daemon=True).start()
-    def finishInit(self):
-        import tensorflow as tf
         self.model = tf.keras.models.load_model(globalFuncs.directories.model)
 
     def analyzeImageVerbose(self, dir):

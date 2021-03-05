@@ -7,7 +7,7 @@ from PIL import Image
 
 from Other.ImageFormatter import cropImageByColorDetection, resizeImage
 from Class.globalF import globalFuncs
-from Class.tensorflow import Tensorflow
+#from Class.algorithm import Tensorflow
 
 
 class Scan():
@@ -25,6 +25,8 @@ class Scan():
         self.postProcessImage.save(fp=self.imageDirectory)
         self.custID = ""
         self.serverID = None
+
+
 
 
         return self
@@ -48,10 +50,6 @@ class Scan():
 
         return self
 
-    def uploadScanToDatabase(self):
-        globalFuncs.database.uploadScan(self)
-
-
     def grabImage(self):
         print(globalFuncs.directories.temp)
         self.imageDirectory = globalFuncs.directories.temp + (self.details["location"].split("/")[1])
@@ -71,9 +69,9 @@ class Scan():
         return image
 
     def analyze(self): #this func takes a while
-        self.result = Tensorflow().analyzeImageSuccinct(self.postProcessImage)
+        #self.result = Tensorflow().analyzeImageSuccinct(self.postProcessImage)
 
-        if globalFuncs.appInfo["facade"] == False:
+        if globalFuncs.appInfo["facade"] == True:
             self.result = self.formatList(self.result)
         print(self.result)
         self.generateMultiDiListofResults()#
