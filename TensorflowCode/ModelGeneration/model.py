@@ -56,13 +56,10 @@ def createModel(dataLoc):
 
     train_generator = train_datagen.flow_from_directory(
         fr'{dataLoc}\train',
-        batch_size=32,
-        class_mode='binary')
-
+        batch_size=32)
     validation_generator = validation_datagen.flow_from_directory(
         fr'{dataLoc}\validation',
-        batch_size=32,
-        class_mode='binary')
+        batch_size=32)
 
     print(train_generator.image_shape)
 
