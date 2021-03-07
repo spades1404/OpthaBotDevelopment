@@ -56,16 +56,23 @@ def createModel(dataLoc):
 
     train_generator = train_datagen.flow_from_directory(
         fr'{dataLoc}\train',
-        batch_size=32)
+        batch_size=32,
+        target_size=(IMG_SIZE,IMG_SIZE))
     validation_generator = validation_datagen.flow_from_directory(
         fr'{dataLoc}\validation',
-        batch_size=32)
+        batch_size=32,
+        target_size=(IMG_SIZE,IMG_SIZE))
 
     print(train_generator.image_shape)
+    print(train_generator.num_classes)
+
+    #print(train_generator.image_shape)
 
     #Defining model
 
     model = Sequential()
+
+    #model.add(Reshape(input_shape=(512,512,3),target_shape=(1,512,512,3)))
 
     model.add(
         Conv2D(
@@ -74,44 +81,43 @@ def createModel(dataLoc):
             strides=(1,1),
             padding="same",
             data_format='channels_last',
-            input_shape=(256,256,3)
+            input_shape=(IMG_SIZE,IMG_SIZE,3)
         )
     )
-
-
-    model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size=(2, 2),strides=2))
-
-    model.add(
-        Conv2D(
-            filters=64,
-            kernel_size=(2, 2),
-            strides=(1, 1),
-            padding="valid",
-        )
-    )
-
-    model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
-
-    model.add(
-        Conv2D(
-            filters=64,
-            kernel_size=(2, 2),
-            strides=(1, 1),
-            padding="valid",
-        )
-    )
-
-    model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
     print(model.input_shape)
 
+
+    model.add(Activation("relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(
+        Conv2D(
+            filters=64,
+            kernel_size=(2, 2),
+            strides=(1, 1),
+            padding="valid",
+        )
+    )
+
+    model.add(Activation("relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(
+        Conv2D(
+            filters=64,
+            kernel_size=(2, 2),
+            strides=(1, 1),
+            padding="valid",
+        )
+    )
+
+    model.add(Activation("relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
     model.add(Flatten())
-    model.add(Dense(64))
-    model.add(Activation('relu'))
+    model.add(Dense(64,activation="relu"))
     model.add(Dropout(0.25))
-    model.add(Dense(1))
+    model.add(Dense(8))
     model.add(Activation("sigmoid"))
 
     model.compile(loss = "categorical_crossentropy",optimizer="adam",metrics=["accuracy"])

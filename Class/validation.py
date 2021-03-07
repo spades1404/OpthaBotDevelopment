@@ -32,8 +32,6 @@ class Validation():
 
     def validatePlainString(self,strng,numCheck=False):
         strng.replace("-","") #Strings are allowed to have dashes
-        print(strng)
-
         if strng.isalnum() == False:  # IF THE STRING IS NOT ALPHANUMERIC RETURN FALSE
             return False
 
@@ -47,9 +45,13 @@ class Validation():
 
         return True
 
-    def checkNumber(self,num): #verifies phone numbers NUMBER MUST BE STR
+    def checkNumber(num):  # verifies phone numbers NUMBER MUST BE STR
         try:
-            return carrier._is_mobile(number_type(phonenumbers.parse(num,"GB"))) #This will either return True or will fail in which case we will return false
+            parsed = phonenumbers.parse(num, "GB")
+            if number_type(parsed) == 0 or number_type(parsed) == 1 or number_type(parsed) == 99:
+                return True
+            else:
+                return False
         except:
             return False
 
