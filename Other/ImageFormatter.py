@@ -214,7 +214,8 @@ def cropBySmartcrop(filename):  # this version is deprecated - cause it sucks - 
 
 
 if __name__ == "__main__":
-    # os.chdir(r'C:\Users\Public\Documents\PyCharmProjs\LearningTensorflow\ImageFormatting\TestSet')
-    cropped = cropImageByColorDetection("9.jpg")
+    # os.chdir(r'C:\Users\Public\Documents\PyCharmProjs\LearningTensorflow\ImageFormatting\TestSet')cropped = cropImageByColorDetection("9.jpg")
     # reduced = resizeImage(cropped)
     # reduced.save(("testing1"+".jpg"))
+
+    resizeImage(cropImageByColorDetection(r"C:\Users\rajib\Downloads\amd.jpg"),dim=512).save(r"C:\Users\rajib\OneDrive\Documents\Github\OpthaBotDevelopment\Testing\TensorflowTest\amd.jpg")
