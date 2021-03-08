@@ -19,8 +19,9 @@ class ViewScanScreen(MDScreen):
 
         # Clock.schedule_once(self.initDropDown)
 
-        self.on_pre_enter = self.configure
+        self.on_enter = self.configure
 
+        self.configure()
         return
 
     def configure(self):

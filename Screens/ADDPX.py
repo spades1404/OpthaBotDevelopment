@@ -82,7 +82,7 @@ class AddPXScreen(MDScreen):
                     text="The email entered is not valid",
                     buttons=[MDFlatButton(text="Try Again", on_release=globalFuncs.closeDialog)]
                 )
-                globalFuncs.dialog.show()
+                globalFuncs.dialog.open()
                 self.content.ids.spinner.active = False
                 return
 
@@ -96,7 +96,7 @@ class AddPXScreen(MDScreen):
                 self.content.ids.spinner.active = False
                 return
 
-            if globalFuncs.validation.checkNumber(phone) == False and globalFuncs.appSettings[
+            if globalFuncs.validation.checkNumber(num = phone) == False and globalFuncs.appSettings[
                 "Always verify phone numbers are valid"] == True and phone.replace(" ", "") != "":
                 globalFuncs.dialog = MDDialog(
                     title="Error",

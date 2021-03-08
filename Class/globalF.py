@@ -97,6 +97,8 @@ class GLOBAL(): #This will store global information that may need to be accessed
         with open(self.directories.configfile, 'w') as configfile:
             self.config.write(configfile)
 
+        globalFuncs.aes.encrypt(globalFuncs.directories.configfile, globalFuncs.directories.configfilecrypted)
+
 
     #def saveAppSettings(self):
     #    self.jsonSave(self.appSettings,self.directories.appConfigFile)

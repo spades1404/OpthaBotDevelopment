@@ -11,7 +11,7 @@ from Class.globalF import globalFuncs
 from Screens.LOGIN import LogInScreen
 from Screens.PRIMARY import PrimaryScreen
 from Screens.SETUP import SetupScreen
-
+from kivy.config import Config
 
 class OpthaBotApp(MDApp):
     def build(self):
@@ -39,6 +39,8 @@ class OpthaBotApp(MDApp):
         self.screenManager.add_widget(self.primaryScreen)
         self.screenManager.add_widget(self.setup)
 
+        Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+
 
 
         return self.screenManager
@@ -46,7 +48,7 @@ class OpthaBotApp(MDApp):
     def onOpen(self):
         def function():
             print("Checking for first boot")
-            if globalFuncs.appInfo["firstboot"] == True:
+            if bool(globalFuncs.appInfo["firstboot"]) == True:
                 self.screenManager.current = "SETUP"
             print("Checking for new model updates")
             #if globalFuncs.database.checkModelUpdate() == True:

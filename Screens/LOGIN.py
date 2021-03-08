@@ -43,7 +43,7 @@ class LogInScreen(MDScreen):
         if bool(globalFuncs.appInfo["devMode"]) == True:
             Thread(target=bypassLogin, daemon=True).start()
 
-        elif bool(globalFuncs.appInfo["devMode"]) == False:
+        else:
             Thread(target=function, daemon=True).start()  # bypasses login for us
 
     def logInFailed(self):

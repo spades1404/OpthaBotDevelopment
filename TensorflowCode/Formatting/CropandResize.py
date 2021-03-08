@@ -147,16 +147,9 @@ def formatFilesInFolder(path):
             x = resizeImage(cropImageByColorDetection(fr"{mypath}\{i}"),dim = 512).save(fr"{mypath}\{i}")
             print(f"Done with {i}")
         except Exception as e:
-            os.remove(fr"{mypath}\{i}")
+            print(fr"{mypath}\{i}")
             print(f"Deleted a file")
 
 
 if __name__ == "__main__":
-    formatFilesInFolder(r"C:\Users\rajib\Documents\OBNewDataset\SORTED\1")
-    formatFilesInFolder(r"C:\Users\rajib\Documents\OBNewDataset\SORTED\2")
-    formatFilesInFolder(r"C:\Users\rajib\Documents\OBNewDataset\SORTED\3")
-    formatFilesInFolder(r"C:\Users\rajib\Documents\OBNewDataset\SORTED\4")
-    formatFilesInFolder(r"C:\Users\rajib\Documents\OBNewDataset\SORTED\5")
-    formatFilesInFolder(r"C:\Users\rajib\Documents\OBNewDataset\SORTED\6")
-    formatFilesInFolder(r"C:\Users\rajib\Documents\OBNewDataset\SORTED\7")
-    formatFilesInFolder(r"C:\Users\rajib\Documents\OBNewDataset\SORTED\8")
+    formatFilesInFolder(r"C:\Users\rajib\Documents\OBNewDataset\REMAKE\0")

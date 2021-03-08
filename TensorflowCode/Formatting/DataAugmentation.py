@@ -11,11 +11,11 @@ train_datagen = ImageDataGenerator(
 validation_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(
-    r'C:\Users\rajib\Documents\OBNewDataset\data\train',
+    r'C:\Users\rajib\Documents\GitHub\OpthaBotDevelopment\TensorflowCode\Formatting\datanew\train',
     batch_size=32,
     class_mode='binary')
 
 validation_generator = validation_datagen.flow_from_directory(
-    r'C:\Users\rajib\Documents\OBNewDataset\data\validation',
+    r'C:\Users\rajib\Documents\GitHub\OpthaBotDevelopment\TensorflowCode\Formatting\datanew\validation',
     batch_size=32,
     class_mode='binary')

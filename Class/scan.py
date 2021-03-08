@@ -50,6 +50,11 @@ class Scan():
 
         return self
 
+    def uploadScanToDatabase(self):
+        globalFuncs.database.uploadScan(self)
+        return
+
+
     def grabImage(self):
         print(globalFuncs.directories.temp)
         self.imageDirectory = globalFuncs.directories.temp + (self.details["location"].split("/")[1])

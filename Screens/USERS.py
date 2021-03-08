@@ -107,7 +107,8 @@ class ViewUsersScreen(MDScreen):
             "email": self.addUserScreen.ids.emailEntry.text,
             "username": self.addUserScreen.ids.usernameEntry.text,
             "accessLevel": self.val,
-            "practice": globalFuncs.appInfo["practice"]
+            "practice": globalFuncs.appInfo["practice"],
+            "password" : globalFuncs.password.genHash(self.addUserScreen.ids.passwordEntry.text)
         }
 
         for key in data:

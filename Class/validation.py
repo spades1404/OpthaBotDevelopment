@@ -45,7 +45,8 @@ class Validation():
 
         return True
 
-    def checkNumber(num):  # verifies phone numbers NUMBER MUST BE STR
+    def checkNumber(self,num,*args):  # verifies phone numbers NUMBER MUST BE STR
+        print(locals())
         try:
             parsed = phonenumbers.parse(num, "GB")
             if number_type(parsed) == 0 or number_type(parsed) == 1 or number_type(parsed) == 99:

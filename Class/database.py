@@ -83,6 +83,8 @@ class Database():  # Defining the firebase class inside the main window class be
         return x
 
     def simmilar(self, a, b):
+        a = a.lower()
+        b = b.lower()
         return SequenceMatcher(None, a, b).ratio()
 
     def compareDate(self, date1, date2):
@@ -175,15 +177,16 @@ class Database():  # Defining the firebase class inside the main window class be
                 return doc.to_dict()
 
     def signIn(self, username, password):
-        db = self.fsdb.collection(u"users").where("practice", "==", self.gf.appInfo["practice"]).where("username", "==",
-                                                                                         username).get()
+        db = self.fsdb.collection(u"users").where("practice", "==", self.gf.appInfo["practice"]).where("username", "==",username).get()
 
-        print(db)
         try:
-            if self.gf.checkHash(password, db[0].to_dict()["password"]) == True:
+            print(db)
+            doc = db[0]
+            if self.gf.password.checkHash(password, doc.to_dict()["password"]) == True:
                 return db[0]
-        except:
-            "uh oh is log in broke?"
+        except Exception as e:
+            print(e)
+            print("uh oh is log in broke?")
 
         return None
 
@@ -290,9 +293,11 @@ class Database():  # Defining the firebase class inside the main window class be
 
         result = self.fsdb.collection(u"images").add(scanRes)
         scan.serverID = result[1].id
+        scan.dbobj = self.fsdb.collection(u"images").document(scan.serverID).get()
+        scan.details = scan.dbobj.to_dict()
         print(scanRes)
 
-        return (self.fsdb.collection(u"images").document(scan.serverID).get(),scan.dbobj.to_dict())
+        return
 
     def updateDiagnosis(self, sourceID, cond):
         record = self.fsdb.collection(u"images").document(sourceID)

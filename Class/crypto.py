@@ -15,6 +15,7 @@ class Password():
         return bcrypt.hashpw(passw.encode(), bcrypt.gensalt()) #generates a salted bcrypt hash from a plaintext password
 
     def checkHash(self, passw, hash):
+        print(bcrypt.checkpw(passw.encode(), hash))
         return bcrypt.checkpw(passw.encode(), hash) #checks a plain text password against a given hash
 
     def checkPasswordIsValid(self, passw):
@@ -66,11 +67,11 @@ class AES():
 
 
 if __name__ == "__main__":
-    os.chdir(r"C:\Users\rajib\OneDrive\Documents\Github\OpthaBotDevelopment")
+    os.chdir(r"C:\Users\rajib\Documents\GitHub\OpthaBotDevelopment")
     e = AES()
 
-    e.genKey("Assets")
-    e.loadKey("Assets\key.key")
+    #e.genKey("Assets")
+    e.loadKey(r"Assets\key.key")
 
-    e.encrypt(r"Assets\Encryptiontest\test.txt",r"Assets\config.txt")
+    e.encrypt(r"C:\Users\rajib\AppData\Local\Temp\tmpraff7dfo\config.txt",r"Assets\config.txt")
     #e.decrypt(r"Assets\Encryptiontest\output.txt",r"Assets\Encryptiontest\noway.txt")

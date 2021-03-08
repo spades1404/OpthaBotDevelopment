@@ -79,4 +79,4 @@ def img_train_test_split(img_source_dir, train_size):
         print('Copied ' + str(validation_counter) + ' images to data/validation/' + subdir)
 
 if __name__ == "__main__":
-    img_train_test_split(r"C:\Users\rajib\Documents\OBNewDataset\SORTED",0.7)
+    img_train_test_split(r"C:\Users\rajib\Documents\OBNewDataset\REMAKE\data",0.7)
