@@ -12,6 +12,7 @@ from Screens.LOGIN import LogInScreen
 from Screens.PRIMARY import PrimaryScreen
 from Screens.SETUP import SetupScreen
 from kivy.config import Config
+import time
 
 class OpthaBotApp(MDApp):
     def build(self):

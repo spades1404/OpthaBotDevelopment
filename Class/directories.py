@@ -11,7 +11,7 @@ class Directories():
         self.OpthaBotLogo = self.assets + r"\opthabotlogo.png"
         self.icon = self.assets + r"\icon.png"
         self.emptyImageIcon = self.assets + r"\no-image-icon-6.png"
-        self.model = self.assets +r"\model.h5"
+        self.model = self.assets +r"\ALEXNETADAM2.h5"
 
 
         self.aeskey = self.assets + r"\key.key"

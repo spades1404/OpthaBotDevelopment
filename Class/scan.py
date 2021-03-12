@@ -7,7 +7,7 @@ from PIL import Image
 
 from Other.ImageFormatter import cropImageByColorDetection, resizeImage
 from Class.globalF import globalFuncs
-#from Class.algorithm import Tensorflow
+from Class.algorithm import Tensorflow
 
 
 class Scan():
@@ -38,14 +38,13 @@ class Scan():
         self.custID = self.details["custID"]
         self.scanTime = self.details["time"]
         self.resultList = [
-            ["Normal",self.details["condition"][0]],
+            ["Healthy Eye",self.details["condition"][0]],
             ["Diabetic Retinopathy",self.details["condition"][1]],
             ["Glaucoma",self.details["condition"][2]],
             ["Cataracts",self.details["condition"][3]],
             ["Age Related Macular Degeneration",self.details["condition"][4]],
             ["Hypertension",self.details["condition"][5]],
-            ["Myopia",self.details["condition"][6]],
-            ["Other Abnormalities",self.details["condition"][7]],
+            ["Myopia",self.details["condition"][6]]
         ]
 
         return self
@@ -70,14 +69,17 @@ class Scan():
 
     def preProcessImage(self, loc):
         image = cropImageByColorDetection(loc)  # Crops the image to the required content
-        image = resizeImage(image, dim=256)
+        try:
+            image = resizeImage(image, dim=512)
+        except:
+            image = resizeImage(image,dim=256)
         return image
 
     def analyze(self): #this func takes a while
-        #self.result = Tensorflow().analyzeImageSuccinct(self.postProcessImage)
+        self.result = Tensorflow().analyzeImageSuccinct(self.imageDirectory)
 
-        if globalFuncs.appInfo["facade"] == True:
-            self.result = self.formatList(self.result)
+        #if globalFuncs.appInfo["facade"] == True:
+        #    self.result = self.formatList(self.result)
         print(self.result)
         self.generateMultiDiListofResults()#
 
@@ -91,8 +93,7 @@ class Scan():
             ["Cataracts",self.result[3]],
             ["Age Related Macular Degeneration",self.result[4]],
             ["Hypertension",self.result[5]],
-            ["Myopia",self.result[6]],
-            ["Other Abnormalities",self.result[7]],
+            ["Myopia",self.result[6]]
         ]
 
         self.resultList = sorted(self.resultList, key=lambda x: x[1],reverse=True) #Sort List by probability
@@ -124,9 +125,7 @@ class Scan():
             self.resultList[5][0],
             self.resultList[5][1],
             self.resultList[6][0],
-            self.resultList[6][1],
-            self.resultList[7][0],
-            self.resultList[7][1]
+            self.resultList[6][1]
         )
 
     def formatList(self,*args):
