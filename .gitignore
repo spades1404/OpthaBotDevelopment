@@ -130,3 +130,5 @@ dmypy.json
 
 
 /Assets/model.h5
+/plaidml-venv
+/TensorflowCode/Formatting/data

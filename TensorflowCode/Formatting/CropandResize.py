@@ -2,7 +2,7 @@ from os import listdir
 from os.path import isfile, join
 import os
 from PIL import Image  # Python pillow image library
-
+from threading import  Thread
 from Other.RESIZE import resize_contain
 
 def resizeImage(img, dim=500):
@@ -147,9 +147,22 @@ def formatFilesInFolder(path):
             x = resizeImage(cropImageByColorDetection(fr"{mypath}\{i}"),dim = 512).save(fr"{mypath}\{i}")
             print(f"Done with {i}")
         except Exception as e:
-            print(fr"{mypath}\{i}")
-            print(f"Deleted a file")
+            try:
+                print(fr"{mypath}\{i}")
+                print(f"Deleted a file")
+            except:
+                print(fr"{mypath}\{i}")
+                print("Couldnt delete ^")
 
 
 if __name__ == "__main__":
-    formatFilesInFolder(r"C:\Users\rajib\Documents\OBNewDataset\REMAKE\0")
+    root = r"C:\Users\rajib\Documents\OBNewDataset\REMAKE\odir\testarea2"
+
+    formatFilesInFolder(os.path.join(root, "0"))
+    formatFilesInFolder(os.path.join(root, "1"))
+    formatFilesInFolder(os.path.join(root, "2"))
+    formatFilesInFolder(os.path.join(root, "3"))
+    formatFilesInFolder(os.path.join(root, "4"))
+    formatFilesInFolder(os.path.join(root, "5"))
+    formatFilesInFolder(os.path.join(root, "6"))
+    formatFilesInFolder(os.path.join(root, "7"))
