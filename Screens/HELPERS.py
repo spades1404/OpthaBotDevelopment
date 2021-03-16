@@ -21,6 +21,7 @@ Screen:
             AsyncImage:
                 id: currentImage
                 
+                
             BoxLayout:
                 orientation: "horizontal"
                 spacing: 10

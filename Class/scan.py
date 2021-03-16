@@ -70,7 +70,7 @@ class Scan():
     def preProcessImage(self, loc):
         image = cropImageByColorDetection(loc)  # Crops the image to the required content
         try:
-            image = resizeImage(image, dim=512)
+            image = resizeImage(image, dim=300)
         except:
             image = resizeImage(image,dim=256)
         return image
