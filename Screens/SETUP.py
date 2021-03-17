@@ -190,6 +190,7 @@ class SetupScreen(MDScreen):
 
             self.setupPractice.ids.spinner.active = False
             self.practice = globalFuncs.database.addNewPractice(name, admin, email, phone, addr, post, self.org.id)
+            self.practice = globalFuncs.database.fsdb.collection(u"practices").document(self.practice.id).get()
 
             self.sm.current = "SETUPADMIN"
 
