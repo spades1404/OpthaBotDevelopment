@@ -1,73 +1,10 @@
 ##IMAGE FORMATTING##
-
-import PIL.ImageOps  # Additional module from pillow
-import cv2  # OpenCV image library
-import numpy as np  # NumPy extlib
-import smartcrop  # Image analyis library, allows intelligent cropping
 from PIL import Image  # Python pillow image library
 
 from Other.RESIZE import resize_contain
 
 
 ##NOTE NOT ALL OF THESE FUNCTIONS ENDED UP BEING USED - THEY ARE KEPT HERE IN CASE OF USE IN OTHER AREAS##
-def convert2Grayscale(img):  # converts a cv2 image to grayscale
-    return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-
-def invertImage(img):  # inverts the image colours for a cv2 image
-    return cv2.bitwise_not(img)
-
-
-def getSmallestSide(img):  # gets the smallest side of an image
-    width, height = img.size
-    print([width, height])
-    return min([width, height])
-
-
-def invertImagePIL(img):  # inverts colours of a pillow image
-    return PIL.ImageOps.invert(img)
-
-
-def convert2grayscalePIL(img):  # converts colours to greyscale for a pillow image
-    return img.convert('LA')
-
-
-def convertCV2toPIL(opencv_image):  # converts a cv2 image to a pillow image
-    color_coverted = cv2.cvtColor(opencv_image, cv2.COLOR_BGR2RGB)  # changes colour coding from BGR to RGB
-    pil_image = Image.fromarray(color_coverted)  # conversion from cv2 to pillow
-    return pil_image
-
-
-def convertPILtoCV2(pil_img):  # converts a pillow image into a cv2 image
-    numpy_image = np.array(pil_img)  # creates a numpy array of rgb values for the image
-    opencv_image = cv2.cvtColor(numpy_image, cv2.COLOR_RGB2BGR)  # creates a cv2 BGR image from the RGB array
-    return opencv_image
-
-
-def calculateScore(score):
-    return (abs(score["detail"]) + abs(score[
-                                           "saturation"]))  # generates a score from the smartcrop output by adding detail, saturation and total crop score which gives a pretty good estimate for where the fundus image is
-
-
-def returnCropCoords(img):
-    sc = smartcrop.SmartCrop()  # generates a smartcrop object
-    result = sc.crop(img, 200, 200)  # creates 500 decent crops
-
-    # here we will cycle through the possible crops to see which one is the best
-    highestVal = 0  # this will track the highest score
-    for i in result["crops"]:
-        # print(i)
-        x = calculateScore(i["score"])  # calculate score for each crop
-        # print(x)
-        if x > highestVal:  # check if the score is highest or not
-            highestVal = x
-
-    # this for loop just grabs the crop that had the best score
-    for i in result["crops"]:
-        if calculateScore(i["score"]) == highestVal:
-            print(highestVal)
-            return [i["x"], i["y"], i["width"], i["height"]]  # this returns the crop details
-
 
 def resizeImage(img, dim=500):
     img = resize_contain(img, [dim,
@@ -201,16 +138,6 @@ def cropImageByColorDetection(file):
     return cropped_image
 
 
-def cropBySmartcrop(filename):  # this version is deprecated - cause it sucks - cause smartcrop sucks
-    image = cv2.imread(filename)  # Read the image (As OPENCV)
-    image = convertCV2toPIL(image)  # Convert the image to a pillow image
-    image = resizeImage(image)
-    # image = invertImagePIL(image)
-    crops = returnCropCoords(image)  # Grab the crop details
-    area = (crops[0], crops[1], crops[0] + crops[2], crops[1] + crops[3])  # variable that stores the crop details
-    cropped = image.crop(area)  # Crop the image
-    getSmallestSide(image)
-    cropped.show()  # Show the image
 
 
 if __name__ == "__main__":
