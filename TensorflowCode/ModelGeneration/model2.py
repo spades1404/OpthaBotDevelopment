@@ -16,7 +16,7 @@ import keras
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D,Activation, Flatten, Dense, Dropout, Reshape, ZeroPadding2D,BatchNormalization,AveragePooling2D,Add,Input
 from keras.preprocessing.image import ImageDataGenerator
-from keras.optimizers import Adam,RMSprop
+from keras.optimizers import Adam,RMSprop,SGD,Adamax
 from keras import activations
 from keras.callbacks import EarlyStopping
 from keras.regularizers import l2
@@ -29,7 +29,7 @@ global IMG_SIZE, NB_CHANNELS, BATCH_SIZE,NB_TRAIN_IMAGE,NB_VALID_IMG, WEIGHTS,DA
 DATALOC = r"C:\Users\rajib\Documents\GitHub\OpthaBotDevelopment\TensorflowCode\Formatting\data"
 IMG_SIZE = 227# Replace with the size of your images
 NB_CHANNELS = 3 # 3 for RGB images or 1 for grayscale images
-BATCH_SIZE = 16 # Typical values are 8, 16 or 32
+BATCH_SIZE = 8 # Typical values are 8, 16 or 32
 NB_TRAIN_IMG = sum([len(files) for r, d, files in os.walk(os.path.join(DATALOC,"train"))]) # Replace with the total number training images
 NB_VALID_IMG = sum([len(files) for r, d, files in os.walk(os.path.join(DATALOC,"validation"))]) # Replace with the total number validation images
 WEIGHTS = None #Weighting for number of data in dataset class
@@ -160,7 +160,7 @@ def alexNet(optimizer = "adam"):
     ])
 
     print(model.summary())
-    model.compile(optimizer='adam',
+    model.compile(optimizer=optimizer,
                   loss="categorical_crossentropy",
                   metrics=['accuracy'])
 
@@ -181,12 +181,13 @@ def fit(model,savename = "model.h5"):
     model.save(savename)
 if __name__ == "__main__":
     global es
-    es = keras.callbacks.EarlyStopping(monitor="val_acc",patience=10,mode="max",restore_best_weights=True)
+    es = keras.callbacks.EarlyStopping(monitor="val_acc",patience=5,mode="max")#,restore_best_weights=True)
 
     t,v,WEIGHTS = makeGenerators(DATALOC)
 
+    o = SGD(lr=0.00001)
     #AlexNet with Adam
-    m = alexNet("adam")
-    fit(m,savename="ALEXNETADAM2.h5")
+    m = alexNet(o)
+    fit(m,savename="ALEXNETADAM3.h5")
 
     print("done")

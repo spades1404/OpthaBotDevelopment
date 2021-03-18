@@ -78,8 +78,8 @@ class Scan():
     def analyze(self): #this func takes a while
         self.result = Tensorflow().analyzeImageSuccinct(self.imageDirectory)
 
-        #if globalFuncs.appInfo["facade"] == True:
-        #    self.result = self.formatList(self.result)
+        if globalFuncs.appInfo["facade"] == True:
+            self.result = self.formatList(self.result)
         print(self.result)
         self.generateMultiDiListofResults()#
 
