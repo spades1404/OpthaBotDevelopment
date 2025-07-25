@@ -1,6 +1,6 @@
 # OpthaBot Development Repository
 
-##Notice
+## Notice
 This project is __VERY__ old now, over 4 years. It was initially just a project for A-Levels. Machine Learning has advanced significantly since this time. I would not think this project is a good framework for any machine learning anymore. 
 
 ## What is OpthaBot?
