@@ -1,5 +1,8 @@
 # OpthaBot Development Repository
 
+##Notice
+This project is __VERY__ old now, over 4 years. It was initially just a project for A-Levels. Machine Learning has advanced significantly since this time. I would not think this project is a good framework for any machine learning anymore. 
+
 ## What is OpthaBot?
 __OpthaBot__ is a tool that will help Optomometrists make diagnoses faster. It will utlises machine learning algorithms to make predictions based on fundus imagery. Alongside the ability to take in fundus scans and analyze them, OpthaBot also provides databasing options to manage patients, scans, diagnoses and users. 
 
